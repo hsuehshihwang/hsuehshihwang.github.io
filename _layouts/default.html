@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    {% include head.html %}
+  </head>
+  <body>
+    <header>
+      {% include nav.html %}
+    </header>
+    <main role="main" class="container pb-5">
+      {{ content }}
+    </main>
+    <footer class="footer">
+      <div class="container">
+        {% include footer.html %}
+      </div>
+    </footer>
+  </body>
+</html>
