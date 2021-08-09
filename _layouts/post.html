@@ -2,25 +2,57 @@
 layout: default
 ---
 <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
-
+  <span> tags: [
+    {% for tag in page.tags %}
+      {% capture tag_name %}{{ tag }}{% endcapture %}
+      <a href="/tag/{{ tag_name }}"><code class="highligher-rouge"><nobr>{{ tag_name }}</nobr></code>&nbsp;</a>
+    {% endfor %}
+  ]</span>
   <header class="post-header">
-    <h1 class="post-title p-name mt-5" itemprop="name headline">{{ page.title | escape }}</h1>
+    <h1 class="post-title p-name" itemprop="name headline">{{ page.title | escape }}</h1>
     <p class="post-meta">
       <time class="dt-published" datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">
         {{ page.date | date: site.date_format }}
       </time>
       {%- if page.author -%}
         • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span class="p-author h-card" itemprop="name">{{ page.author }}</span></span>
-      {%- endif -%}</p>
+      {%- endif -%}
+    </p>
   </header>
 
   <div class="post-content e-content" itemprop="articleBody">
     {{ content }}
   </div>
 
+  <span> tags: [
+    {% for tag in page.tags %}
+      {% capture tag_name %}{{ tag }}{% endcapture %}
+      <a href="/tag/{{ tag_name }}"><code class="highligher-rouge"><nobr>{{ tag_name }}</nobr></code>&nbsp;</a>
+    {% endfor %}
+  ]</span>
+  <hr/><br/>
+  <h3>相關文章</h3>
+  
+  <div class="related-posts">
+    {% assign firstTag = page.tags | first %}
+    {% assign relatedCount = 0 %}
+    {% for related in site.tags[firstTag] %}
+    {% unless page.url == related.url %}
+      {% assign relatedCount = relatedCount | plus: 1 %}
+      <a href="{{ site.baseurl }}{{related.url}}">{{ related.title }}</a><br>
+      {% endunless %}
+        
+      {% if relatedCount == 4 %}
+        {% break %}
+      {% endif %}
+    {% endfor %}
+  </div>
+
   {%- if site.disqus.shortname -%}
+  <hr/><br/>
     {%- include disqus_comments.html -%}
   {%- endif -%}
 
   <a class="u-url" href="{{ page.url | relative_url }}" hidden></a>
 </article>
+

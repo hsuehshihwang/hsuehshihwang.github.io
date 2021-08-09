@@ -36,6 +36,9 @@ plugins:
   - jekyll-feed
   - jekyll-paginate
   - jekyll-liquify
+  - jekyll-gist
+  - jekyll-coffeescript
+  - jekyll-assets
 
 sass:
   load_paths:
@@ -45,6 +48,10 @@ paginate: 2
 # paginate_path: "/blog/page:num/"
 
 excerpt_separator: <!--more-->
+
+collections:
+  tag:
+    output: true
 
 # Exclude from processing.
 # The following items will not be processed, by default.

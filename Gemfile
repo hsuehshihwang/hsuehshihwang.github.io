@@ -18,6 +18,9 @@ group :jekyll_plugins do
   gem "jekyll-feed", "~> 0.12"
   gem "jekyll-paginate"
   gem "jekyll-liquify"
+  gem "jekyll-gist"
+  gem "jekyll-coffeescript"
+  gem "jekyll-assets"
 end
 
 # Windows and JRuby does not include zoneinfo files, so bundle the tzinfo-data gem

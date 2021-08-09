@@ -2,7 +2,9 @@
 layout: post
 title:  "USB的種類(OHCI、UHCI、EHCI、XHCI)"
 date:   2021-08-09 11:34:00 +0800
-categories: usb
+tags:
+  - usb
+  - post
 ---
 
 ### USB的種類(OHCI、UHCI、EHCI、XHCI)
