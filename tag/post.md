@@ -5,8 +5,6 @@ layout: default
 <div style="min-height:500px">
 <!-- This loops through the paginated posts -->
 {% assign tag = page.url | basename %}
-tag: {{ tag }}  <br/>
-page.url: {{ page.url }}  <br/>
 {% for post in site.tags[ tag ] %}
   <h2 class="mt-3"><a href="{{ post.url }}">{{ post.title }}</a></h2>
   <p class="author">
