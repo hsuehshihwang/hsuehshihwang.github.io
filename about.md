@@ -6,5 +6,5 @@ permalink: /about/
 
 # Hsueh-Shih Wang 
 
-E-mail: hsuehshihwang@gmail.com
+<i class="fa fa-envelope"></i>: hsuehshihwang@gmail.com
 
