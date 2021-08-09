@@ -6,7 +6,7 @@ test: "test liquify {{ page.title_variable }}"
 ---
 
 <h1>
-{{ page.test | liquify }}
+	{{ page.test | liquify }} {{ page.title_variable }}
 </h1>
 
 <div style="min-height:500px">
