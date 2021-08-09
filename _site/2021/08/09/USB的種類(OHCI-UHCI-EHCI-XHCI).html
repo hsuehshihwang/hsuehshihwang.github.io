@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Hsueh-Shih's Blog</title>
+<link rel="stylesheet" href="/assets/main.css">
+<link rel="stylesheet" href="/assets/sticky-footer-navbar.css">
+<script src="/js/jquery.slim.min.js"></script>
+<script src="/js/umd/popper.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/brands.min.js"></script>
+<script src="/js/solid.min.js"></script>
+<script src="/js/fontawesome.min.js"></script>
+
+
+
+  </head>
+  <body>
+    <header>
+      <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark">
+  <a class="navbar-brand" href="/">Hsueh-Shih's Blog</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item ">
+        <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="/about">About Me</a>
+      </li>
+      <!--
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Dropdown
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#">Action</a>
+          <a class="dropdown-item" href="#">Another action</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">Something else here</a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link disabled" href="#">Disabled</a>
+      </li>
+      -->
+    </ul>
+    <!-- TODO: search form
+    <form class="form-inline my-2 my-lg-0">
+      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form>
+    -->
+  </div>
+</nav>
+
+    </header>
+    <main role="main" class="container pb-5">
+      <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <span> tags: [
+    
+      
+      <a href="/tag/usb"><code class="highligher-rouge"><nobr>usb</nobr></code>&nbsp;</a>
+    
+      
+      <a href="/tag/post"><code class="highligher-rouge"><nobr>post</nobr></code>&nbsp;</a>
+    
+  ]</span>
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">USB的種類(OHCI、UHCI、EHCI、XHCI)</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2021-08-09T11:34:00+08:00" itemprop="datePublished">
+        Aug 9, 2021
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h3 id="usb的種類ohciuhciehcixhci">USB的種類(OHCI、UHCI、EHCI、XHCI)</h3>
+
+<p><strong><em>USB(Universal Serial Bus)</em></strong>通用串列匯流排：USB1.1規格支援兩種速率：低速(low speed)1.5Mbps和全速(full speed)12Mbps.</p>
+
+<!--more-->
+
+<p><strong><em>USB2.0</em></strong>規格除了支援原有的兩種速度外，還額外支援高速(high speed)480Mbps。</p>
+
+<p><strong><em>USB3.0</em></strong>支援全雙工，比USB 2.0多了數個觸點，並採用發送列表區段來進行資料發包。USB 3.0暫定的供電標準為900mA，且理論上有支援光纖傳輸的潛力。USB 3.0設計的「Super Speed」傳輸速度為5Gbit/s，理論資料傳輸速度為625MByte/s。</p>
+
+<p>OHCI、UHCI都是USB1.1的介面標準，而EHCI是對應USB2.0的介面標準，最新的xHC則是USB3.0的介面標準。</p>
+
+<ol>
+  <li>
+    <p><strong><em>OHCI（Open Host Controller Interface）</em></strong>是支援<strong>USB1.1</strong>的標準，但它不僅僅是針對USB，還支援其他的一些介面，比如它還支援Apple的火線（Firewire，IEEE 1394）介面。與UHCI相比，OHCI的硬體複雜，硬體做的事情更多，所以實現對應的軟體驅動的任務，就相對較簡單。主要用於非x86的USB，如擴展卡、嵌入式開發板的USB主控。</p>
+  </li>
+  <li>
+    <p><strong><em>UHCI（Universal Host Controller Interface）</em></strong>，<strong><em>是Intel主導的對USB1.0、1.1的介面標準</em></strong>，與OHCI不相容。UHCI的軟體驅動的任務重，需要做得比較複雜，但可以使用較便宜、較簡單的硬體的USB控制器。Intel和VIA使用UHCI，而其餘的硬體提供商使用OHCI。</p>
+  </li>
+</ol>
+
+<p>3. <strong><em>EHCI（Enhanced Host Controller Interface）</em></strong>，是Intel主導的<strong><em>USB2.0</em></strong>的介面標準。EHCI僅提供USB2.0的高速功能，而依靠UHCI或OHCI來提供對全速（full-speed）或低速（low-speed）設備的支援。</p>
+
+<p>4. <strong><em>xHCI（eXtensible Host Controller Interface）</em></strong>，是最新最火的<strong><em>USB3.0</em></strong>的介面標準，它在速度、節能、虛擬化等方面都比前面3中有了較大的提高。xHCI 支援所有種類速度的USB設備（USB 3.0 SuperSpeed, USB 2.0 High-speed, USB 1.1 Low-speed and Full-speed）。</p>
+
+<p><strong>USB1.1 —&gt; (Low-Speed and Full-Speed)</strong><br />
+<strong>USB2.0 —&gt; High Speed</strong><br />
+<strong>USB3.0 —&gt; Super Speed</strong></p>
+
+
+  </div>
+
+  <span> tags: [
+    
+      
+      <a href="/tag/usb"><code class="highligher-rouge"><nobr>usb</nobr></code>&nbsp;</a>
+    
+      
+      <a href="/tag/post"><code class="highligher-rouge"><nobr>post</nobr></code>&nbsp;</a>
+    
+  ]</span>
+  <hr/><br/>
+  <h3>相關文章</h3>
+  
+  <div class="related-posts">
+    
+    
+    
+    
+        
+      
+    
+  </div><a class="u-url" href="/2021/08/09/USB%E7%9A%84%E7%A8%AE%E9%A1%9E(OHCI-UHCI-EHCI-XHCI).html" hidden></a>
+</article>
+
+
+    </main>
+    <footer class="footer">
+      <div class="container">
+        &copy; 2021 Hsueh-Shih's Blog 
+
+      </div>
+    </footer>
+  </body>
+</html>
