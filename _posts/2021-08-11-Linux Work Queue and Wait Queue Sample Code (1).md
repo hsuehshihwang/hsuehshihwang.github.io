@@ -7,8 +7,6 @@ tags:
   - post
 ---
 
-
-
 DECLARE_WAIT_QUEUE_HEAD(), wait_event_interruptible(), flag, wake_up_interruptible()
 
 alloc_workqueue(), INIT_WORK(), queue_work(), flush_workqueue(), destroy_workqueue()
