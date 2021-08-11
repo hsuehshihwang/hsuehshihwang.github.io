@@ -86,85 +86,11 @@
     <span class="date">Aug 11, 2021</span>
   </p>
   <div class="content">
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#include &lt;linux/module.h&gt;
-#include &lt;linux/kernel.h&gt;
-#include &lt;linux/delay.h&gt;
-#include &lt;linux/workqueue.h&gt;
-#include &lt;linux/wait.h&gt;
-#include &lt;linux/sched.h&gt;
-#include &lt;linux/delay.h&gt;
+    <p>DECLARE_WAIT_QUEUE_HEAD(), wait_event_interruptible(), flag, wake_up_interruptible()</p>
 
-struct workqueue_struct *workqueue_test;
+<p>alloc_workqueue(), INIT_WORK(), queue_work(), flush_workqueue(), destroy_workqueue()</p>
 
-struct work_struct work_test;
-
-// #define WORK_LOOP 
-#ifdef WORK_LOOP
-static int stop = 0; 
-#else
-static DECLARE_WAIT_QUEUE_HEAD(waitqueue_test);
-static char flag = 'n';
-#endif
-
-void work_test_func(struct work_struct *work)
-{
-    printk("%s()\n", __func__);
-
-#ifdef WORK_LOOP
-    mdelay(5000);
-
-    if(!stop) queue_work(workqueue_test, &amp;work_test);
-
-#else
-    printk("Blocking...\n");
-
-    // wait for flag and event
-    wait_event_interruptible(waitqueue_test, flag == 'y');
-    
-    printk("Leave blocking...\n");
-
-#endif
-
-}
-
-
-static int test_init(void)
-{
-    printk("Hello,world!\n");
-
-    // alloc workqueue
-    workqueue_test = alloc_workqueue("workqueue_test", 0, 0);
-    
-    // init work
-    INIT_WORK(&amp;work_test, work_test_func);
-    
-    // append work into workqueue
-    queue_work(workqueue_test, &amp;work_test);
-    
-    return 0;
-
-}
-
-static void test_exit(void)
-{
-    printk("Goodbye,cruel world!\n");
-    flag = 'y'; 
-    wake_up_interruptible(&amp;waitqueue_test);
-#ifdef WORK_LOOP
-    stop = 1; 
-#endif
-    flush_workqueue(workqueue_test);
-    destroy_workqueue(workqueue_test);
-}
-
-module_init(test_init);
-module_exit(test_exit);
-
-MODULE_AUTHOR("Ralph Wang&lt;enhanceralph@gmail.com&gt;");
-MODULE_LICENSE("Dual BSD/GPL");
-
-
-</code></pre></div></div>
+<p>struct workqueue_struct *, struct work_struct</p>
 
 
   </div>

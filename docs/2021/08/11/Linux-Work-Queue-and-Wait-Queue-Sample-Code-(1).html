@@ -19,8 +19,8 @@
 <meta name="generator" content="Jekyll v4.2.0" />
 <meta property="og:title" content="Linux Work Queue and Wait Queue Sample Code (1)" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="#include &lt;linux/module.h&gt; #include &lt;linux/kernel.h&gt; #include &lt;linux/delay.h&gt; #include &lt;linux/workqueue.h&gt; #include &lt;linux/wait.h&gt; #include &lt;linux/sched.h&gt; #include &lt;linux/delay.h&gt; struct workqueue_struct *workqueue_test; struct work_struct work_test; // #define WORK_LOOP #ifdef WORK_LOOP static int stop = 0; #else static DECLARE_WAIT_QUEUE_HEAD(waitqueue_test); static char flag = &#39;n&#39;; #endif void work_test_func(struct work_struct *work) { printk(&quot;%s()\n&quot;, __func__); #ifdef WORK_LOOP mdelay(5000); if(!stop) queue_work(workqueue_test, &amp;work_test); #else printk(&quot;Blocking...\n&quot;); // wait for flag and event wait_event_interruptible(waitqueue_test, flag == &#39;y&#39;); printk(&quot;Leave blocking...\n&quot;); #endif } static int test_init(void) { printk(&quot;Hello,world!\n&quot;); // alloc workqueue workqueue_test = alloc_workqueue(&quot;workqueue_test&quot;, 0, 0); // init work INIT_WORK(&amp;work_test, work_test_func); // append work into workqueue queue_work(workqueue_test, &amp;work_test); return 0; } static void test_exit(void) { printk(&quot;Goodbye,cruel world!\n&quot;); flag = &#39;y&#39;; wake_up_interruptible(&amp;waitqueue_test); #ifdef WORK_LOOP stop = 1; #endif flush_workqueue(workqueue_test); destroy_workqueue(workqueue_test); } module_init(test_init); module_exit(test_exit); MODULE_AUTHOR(&quot;Ralph Wang&lt;enhanceralph@gmail.com&gt;&quot;); MODULE_LICENSE(&quot;Dual BSD/GPL&quot;);" />
-<meta property="og:description" content="#include &lt;linux/module.h&gt; #include &lt;linux/kernel.h&gt; #include &lt;linux/delay.h&gt; #include &lt;linux/workqueue.h&gt; #include &lt;linux/wait.h&gt; #include &lt;linux/sched.h&gt; #include &lt;linux/delay.h&gt; struct workqueue_struct *workqueue_test; struct work_struct work_test; // #define WORK_LOOP #ifdef WORK_LOOP static int stop = 0; #else static DECLARE_WAIT_QUEUE_HEAD(waitqueue_test); static char flag = &#39;n&#39;; #endif void work_test_func(struct work_struct *work) { printk(&quot;%s()\n&quot;, __func__); #ifdef WORK_LOOP mdelay(5000); if(!stop) queue_work(workqueue_test, &amp;work_test); #else printk(&quot;Blocking...\n&quot;); // wait for flag and event wait_event_interruptible(waitqueue_test, flag == &#39;y&#39;); printk(&quot;Leave blocking...\n&quot;); #endif } static int test_init(void) { printk(&quot;Hello,world!\n&quot;); // alloc workqueue workqueue_test = alloc_workqueue(&quot;workqueue_test&quot;, 0, 0); // init work INIT_WORK(&amp;work_test, work_test_func); // append work into workqueue queue_work(workqueue_test, &amp;work_test); return 0; } static void test_exit(void) { printk(&quot;Goodbye,cruel world!\n&quot;); flag = &#39;y&#39;; wake_up_interruptible(&amp;waitqueue_test); #ifdef WORK_LOOP stop = 1; #endif flush_workqueue(workqueue_test); destroy_workqueue(workqueue_test); } module_init(test_init); module_exit(test_exit); MODULE_AUTHOR(&quot;Ralph Wang&lt;enhanceralph@gmail.com&gt;&quot;); MODULE_LICENSE(&quot;Dual BSD/GPL&quot;);" />
+<meta name="description" content="DECLARE_WAIT_QUEUE_HEAD(), wait_event_interruptible(), flag, wake_up_interruptible() alloc_workqueue(), INIT_WORK(), queue_work(), flush_workqueue(), destroy_workqueue() struct workqueue_struct *, struct work_struct" />
+<meta property="og:description" content="DECLARE_WAIT_QUEUE_HEAD(), wait_event_interruptible(), flag, wake_up_interruptible() alloc_workqueue(), INIT_WORK(), queue_work(), flush_workqueue(), destroy_workqueue() struct workqueue_struct *, struct work_struct" />
 <link rel="canonical" href="https://hsuehshihwang.github.io//2021/08/11/Linux-Work-Queue-and-Wait-Queue-Sample-Code-(1).html" />
 <meta property="og:url" content="https://hsuehshihwang.github.io//2021/08/11/Linux-Work-Queue-and-Wait-Queue-Sample-Code-(1).html" />
 <meta property="og:site_name" content="Hsueh-Shih’s Blog" />
@@ -29,7 +29,7 @@
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="Linux Work Queue and Wait Queue Sample Code (1)" />
 <script type="application/ld+json">
-{"headline":"Linux Work Queue and Wait Queue Sample Code (1)","dateModified":"2021-08-11T19:12:00+08:00","datePublished":"2021-08-11T19:12:00+08:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://hsuehshihwang.github.io//2021/08/11/Linux-Work-Queue-and-Wait-Queue-Sample-Code-(1).html"},"url":"https://hsuehshihwang.github.io//2021/08/11/Linux-Work-Queue-and-Wait-Queue-Sample-Code-(1).html","description":"#include &lt;linux/module.h&gt; #include &lt;linux/kernel.h&gt; #include &lt;linux/delay.h&gt; #include &lt;linux/workqueue.h&gt; #include &lt;linux/wait.h&gt; #include &lt;linux/sched.h&gt; #include &lt;linux/delay.h&gt; struct workqueue_struct *workqueue_test; struct work_struct work_test; // #define WORK_LOOP #ifdef WORK_LOOP static int stop = 0; #else static DECLARE_WAIT_QUEUE_HEAD(waitqueue_test); static char flag = &#39;n&#39;; #endif void work_test_func(struct work_struct *work) { printk(&quot;%s()\\n&quot;, __func__); #ifdef WORK_LOOP mdelay(5000); if(!stop) queue_work(workqueue_test, &amp;work_test); #else printk(&quot;Blocking...\\n&quot;); // wait for flag and event wait_event_interruptible(waitqueue_test, flag == &#39;y&#39;); printk(&quot;Leave blocking...\\n&quot;); #endif } static int test_init(void) { printk(&quot;Hello,world!\\n&quot;); // alloc workqueue workqueue_test = alloc_workqueue(&quot;workqueue_test&quot;, 0, 0); // init work INIT_WORK(&amp;work_test, work_test_func); // append work into workqueue queue_work(workqueue_test, &amp;work_test); return 0; } static void test_exit(void) { printk(&quot;Goodbye,cruel world!\\n&quot;); flag = &#39;y&#39;; wake_up_interruptible(&amp;waitqueue_test); #ifdef WORK_LOOP stop = 1; #endif flush_workqueue(workqueue_test); destroy_workqueue(workqueue_test); } module_init(test_init); module_exit(test_exit); MODULE_AUTHOR(&quot;Ralph Wang&lt;enhanceralph@gmail.com&gt;&quot;); MODULE_LICENSE(&quot;Dual BSD/GPL&quot;);","@context":"https://schema.org"}</script>
+{"headline":"Linux Work Queue and Wait Queue Sample Code (1)","dateModified":"2021-08-11T19:12:00+08:00","datePublished":"2021-08-11T19:12:00+08:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://hsuehshihwang.github.io//2021/08/11/Linux-Work-Queue-and-Wait-Queue-Sample-Code-(1).html"},"url":"https://hsuehshihwang.github.io//2021/08/11/Linux-Work-Queue-and-Wait-Queue-Sample-Code-(1).html","description":"DECLARE_WAIT_QUEUE_HEAD(), wait_event_interruptible(), flag, wake_up_interruptible() alloc_workqueue(), INIT_WORK(), queue_work(), flush_workqueue(), destroy_workqueue() struct workqueue_struct *, struct work_struct","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7910474923772750" crossorigin="anonymous"></script>
@@ -83,7 +83,7 @@
   <span> tags: [
     
       
-      <a href="/tag/buildroot"><code class="highligher-rouge"><nobr>buildroot</nobr></code>&nbsp;</a>
+      <a href="/tag/driver"><code class="highligher-rouge"><nobr>driver</nobr></code>&nbsp;</a>
     
       
       <a href="/tag/post"><code class="highligher-rouge"><nobr>post</nobr></code>&nbsp;</a>
@@ -109,7 +109,15 @@
   </header>
 
   <div class="post-content e-content" itemprop="articleBody">
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#include &lt;linux/module.h&gt;
+    <p>DECLARE_WAIT_QUEUE_HEAD(), wait_event_interruptible(), flag, wake_up_interruptible()</p>
+
+<p>alloc_workqueue(), INIT_WORK(), queue_work(), flush_workqueue(), destroy_workqueue()</p>
+
+<p>struct workqueue_struct *, struct work_struct</p>
+
+<!--more-->
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#include &lt;linux/module.h&gt;
 #include &lt;linux/kernel.h&gt;
 #include &lt;linux/delay.h&gt;
 #include &lt;linux/workqueue.h&gt;
@@ -195,7 +203,7 @@ MODULE_LICENSE("Dual BSD/GPL");
   <span> tags: [
     
       
-      <a href="/tag/buildroot"><code class="highligher-rouge"><nobr>buildroot</nobr></code>&nbsp;</a>
+      <a href="/tag/driver"><code class="highligher-rouge"><nobr>driver</nobr></code>&nbsp;</a>
     
       
       <a href="/tag/post"><code class="highligher-rouge"><nobr>post</nobr></code>&nbsp;</a>
@@ -214,7 +222,7 @@ MODULE_LICENSE("Dual BSD/GPL");
     
     
       
-      <a href="/2021/08/11/Buildroot-%E7%AD%86%E8%A8%98.html">Buildroot 筆記</a><br>
+      <a href="/2021/08/10/Linux-Device-Model-%E4%B8%89%E8%A7%92%E9%97%9C%E4%BF%82.html">Linux Device Model 三角關係</a><br>
       
         
       

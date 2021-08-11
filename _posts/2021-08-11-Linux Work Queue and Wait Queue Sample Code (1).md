@@ -3,13 +3,19 @@ layout: post
 title:  "Linux Work Queue and Wait Queue Sample Code (1)"
 date:   2021-08-11 19:12:00 +0800
 tags:
-  - buildroot
+  - driver
   - post
 ---
 
 
 
+DECLARE_WAIT_QUEUE_HEAD(), wait_event_interruptible(), flag, wake_up_interruptible()
 
+alloc_workqueue(), INIT_WORK(), queue_work(), flush_workqueue(), destroy_workqueue()
+
+struct workqueue_struct *, struct work_struct
+
+<!--more-->
 
 ```
 #include <linux/module.h>
