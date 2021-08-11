@@ -32,6 +32,9 @@ production: true
 twitter_username: hsuehshihwang
 github_username:  hsuehshihwang
 
+adsense:
+  ad-client: ca-pub-7910474923772750
+
 # Build settings
 theme: minima
 plugins:
