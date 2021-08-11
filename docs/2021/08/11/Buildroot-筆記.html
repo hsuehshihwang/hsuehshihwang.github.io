@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Hsueh-Shih's Blog</title>
+<link rel="stylesheet" href="/assets/main.css">
+<link rel="stylesheet" href="/assets/sticky-footer-navbar.css">
+<script src="/js/jquery.slim.min.js"></script>
+<script src="/js/umd/popper.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/brands.min.js"></script>
+<script src="/js/solid.min.js"></script>
+<script src="/js/fontawesome.min.js"></script>
+
+
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Buildroot 筆記 | Hsueh-Shih’s Blog</title>
+<meta name="generator" content="Jekyll v4.2.0" />
+<meta property="og:title" content="Buildroot 筆記" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="介紹 Buildroot是一簡化且自動化處理產生corss-compilation toolchain, root filesystem, Linux Kernel, bootloader的工具，便於開發embedded system。 Host: 主機、宿主，一般而言就是我們的PC、Notebook Target: 目標設備" />
+<meta property="og:description" content="介紹 Buildroot是一簡化且自動化處理產生corss-compilation toolchain, root filesystem, Linux Kernel, bootloader的工具，便於開發embedded system。 Host: 主機、宿主，一般而言就是我們的PC、Notebook Target: 目標設備" />
+<link rel="canonical" href="https://hsuehshihwang.github.io//2021/08/11/Buildroot-%E7%AD%86%E8%A8%98.html" />
+<meta property="og:url" content="https://hsuehshihwang.github.io//2021/08/11/Buildroot-%E7%AD%86%E8%A8%98.html" />
+<meta property="og:site_name" content="Hsueh-Shih’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-08-11T16:05:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Buildroot 筆記" />
+<script type="application/ld+json">
+{"headline":"Buildroot 筆記","dateModified":"2021-08-11T16:05:00+08:00","datePublished":"2021-08-11T16:05:00+08:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://hsuehshihwang.github.io//2021/08/11/Buildroot-%E7%AD%86%E8%A8%98.html"},"url":"https://hsuehshihwang.github.io//2021/08/11/Buildroot-%E7%AD%86%E8%A8%98.html","description":"介紹 Buildroot是一簡化且自動化處理產生corss-compilation toolchain, root filesystem, Linux Kernel, bootloader的工具，便於開發embedded system。 Host: 主機、宿主，一般而言就是我們的PC、Notebook Target: 目標設備","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7910474923772750" crossorigin="anonymous"></script>
+
+  </head>
+  <body>
+    <header>
+      <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark">
+  <a class="navbar-brand" href="/">Hsueh-Shih's Blog</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item ">
+        <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="/about">About Me</a>
+      </li>
+      <!--
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Dropdown
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#">Action</a>
+          <a class="dropdown-item" href="#">Another action</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">Something else here</a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link disabled" href="#">Disabled</a>
+      </li>
+      -->
+    </ul>
+    <!-- TODO: search form
+    <form class="form-inline my-2 my-lg-0">
+      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form>
+    -->
+  </div>
+</nav>
+
+    </header>
+    <main role="main" class="container pb-5">
+      <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <span> tags: [
+    
+      
+      <a href="/tag/buildroot"><code class="highligher-rouge"><nobr>buildroot</nobr></code>&nbsp;</a>
+    
+      
+      <a href="/tag/post"><code class="highligher-rouge"><nobr>post</nobr></code>&nbsp;</a>
+    
+  ]</span>
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Buildroot 筆記</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2021-08-11T16:05:00+08:00" itemprop="datePublished">
+        Aug 11, 2021
+      </time></p>
+    <p><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-7910474923772750"
+     data-ad-slot="6411930493"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="介紹">介紹</h1>
+
+<p>Buildroot是一簡化且自動化處理產生corss-compilation toolchain, root filesystem, Linux Kernel, bootloader的工具，便於開發embedded system。</p>
+
+<p>Host: 主機、宿主，一般而言就是我們的PC、Notebook
+Target: 目標設備</p>
+
+<!--more-->
+
+<h2 id="安裝buildroot必須的packages">安裝Buildroot必須的packages:</h2>
+
+<ul>
+  <li>Build tools:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">which</code></li>
+      <li><code class="language-plaintext highlighter-rouge">sed</code></li>
+      <li><code class="language-plaintext highlighter-rouge">make</code> (version 3.81 or any later)</li>
+      <li><code class="language-plaintext highlighter-rouge">binutils</code></li>
+      <li><code class="language-plaintext highlighter-rouge">build-essential</code> (only for Debian based systems)</li>
+      <li><code class="language-plaintext highlighter-rouge">gcc</code> (version 2.95 or any later)</li>
+      <li><code class="language-plaintext highlighter-rouge">g++</code> (version 2.95 or any later)</li>
+      <li><code class="language-plaintext highlighter-rouge">bash</code></li>
+      <li><code class="language-plaintext highlighter-rouge">patch</code></li>
+      <li><code class="language-plaintext highlighter-rouge">gzip</code></li>
+      <li><code class="language-plaintext highlighter-rouge">bzip2</code></li>
+      <li><code class="language-plaintext highlighter-rouge">perl</code> (version 5.8.7 or any later)</li>
+      <li><code class="language-plaintext highlighter-rouge">tar</code></li>
+      <li><code class="language-plaintext highlighter-rouge">cpio</code></li>
+      <li><code class="language-plaintext highlighter-rouge">python</code> (version 2.6 or any later)</li>
+      <li><code class="language-plaintext highlighter-rouge">unzip</code></li>
+      <li><code class="language-plaintext highlighter-rouge">rsync</code></li>
+      <li><code class="language-plaintext highlighter-rouge">file</code> (must be in <code class="language-plaintext highlighter-rouge">/usr/bin/file</code>)</li>
+      <li><code class="language-plaintext highlighter-rouge">bc</code></li>
+    </ul>
+  </li>
+  <li>Source fetching tools:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">wget</code></li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="可選是否要安裝的packages">可選是否要安裝的packages:</h2>
+
+<ul>
+  <li>
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">ncurses5</code> to use the <em>menuconfig</em> interface</li>
+      <li><code class="language-plaintext highlighter-rouge">qt4</code> to use the <em>xconfig</em> interface(sudo apt-get install qt4-qmake libqt4-dev)</li>
+      <li><code class="language-plaintext highlighter-rouge">glib2</code>, <code class="language-plaintext highlighter-rouge">gtk2</code> and <code class="language-plaintext highlighter-rouge">glade2</code> to use the <em>gconfig</em> interface</li>
+    </ul>
+  </li>
+  <li>Source fetching tools:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">bazaar</code></li>
+      <li><code class="language-plaintext highlighter-rouge">cvs</code></li>
+      <li><code class="language-plaintext highlighter-rouge">git</code></li>
+      <li><code class="language-plaintext highlighter-rouge">mercurial</code></li>
+      <li><code class="language-plaintext highlighter-rouge">rsync</code></li>
+      <li><code class="language-plaintext highlighter-rouge">scp</code></li>
+      <li><code class="language-plaintext highlighter-rouge">subversion</code></li>
+    </ul>
+  </li>
+  <li>Java-related packages:
+    <ul>
+      <li>The <code class="language-plaintext highlighter-rouge">javac</code> compiler</li>
+      <li>The <code class="language-plaintext highlighter-rouge">jar</code> tool</li>
+    </ul>
+  </li>
+  <li>Documentation generation tools:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">asciidoc</code>, version 8.6.3 or higher</li>
+      <li><code class="language-plaintext highlighter-rouge">w3m</code></li>
+      <li><code class="language-plaintext highlighter-rouge">python</code> with the <code class="language-plaintext highlighter-rouge">argparse</code> module (automatically present in 2.7+ and 3.2+)</li>
+      <li><code class="language-plaintext highlighter-rouge">dblatex</code> (required for the pdf manual only)</li>
+    </ul>
+  </li>
+  <li>Graph generation tools:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">graphviz</code> to use <em>graph-depends</em> and *<pkg>-graph-depends*</pkg></li>
+      <li><code class="language-plaintext highlighter-rouge">python-matplotlib</code> to use <em>graph-build</em></li>
+    </ul>
+  </li>
+</ul>
+
+<p>空間夠的話，建議全部一起安裝，例如git或graphviz(make graph-depends時會用到)又或python都很常用。</p>
+
+<h2 id="quick-start">Quick Start:</h2>
+
+<p>首先我們需要產生一個 <strong>.config</strong>檔，可使用下面四種指令，用圖形化的視窗來設定:</p>
+
+<ol>
+  <li>
+    <p>make menuconfig最基本也是最多人用的</p>
+  </li>
+  <li>
+    <p>make nconfig 新的圖形介面</p>
+  </li>
+  <li>
+    <p>make xconfig Qt-based的圖形介面</p>
+  </li>
+  <li>
+    <p>make gconfig GTK-based的圖形介面</p>
+  </li>
+</ol>
+
+<p>只是畫面不同，重點在設定完，會在目前目錄下(也就是top-level的目錄)產生一個<strong>.config</strong>檔(隱藏檔)，這裡面有你設定好的設定，之後也可直接更改此檔來做設定。設定完後下make，沒意外的話，一切就會自動完成。</p>
+
+<p>要注意的是，這裡不能在top-level資料夾下 make -jN的指令，一般我們會在4核下的cpu 裡下make -j8來進行多工的處理，可是Buildroot不支援在top-level的並行處理。取而代之的是使用BR2_JLEVEL。這選項告訴Buildroot在每個獨立的package裡下make -jN，例如修改<strong>.config</strong>的BR2_JLEVEL=8。</p>
+
+<h3 id="make的流程">make的流程:</h3>
+
+<ul>
+  <li>download source files (as required);</li>
+  <li>configure, build and install the cross-compilation toolchain, or simply import an external toolchain;</li>
+  <li>configure, build and install selected target packages;</li>
+  <li>build a kernel image, if selected;</li>
+  <li>build a bootloader image, if selected;</li>
+  <li>create a root filesystem in selected formats.</li>
+</ul>
+
+<p>最後結果輸出在output資料夾。</p>
+
+<h3 id="output資料夾內容">output資料夾內容:</h3>
+
+<p>images =&gt; kernel image,bootloader, root filesystem images等等</p>
+
+<p>build =&gt; 所有下載或自定義build好的packages</p>
+
+<p>staging =&gt; 這資料包含一些研發工具，用來compile libraries and applications給target使用</p>
+
+<p>target =&gt; 目標設備的root filesystem範本，依照手冊說明，不包含dev，因為make的時後並</p>
+
+<p>​                 不是用root啟動，這裡比較奇怪，我沒有下sudo make，可是target底下也是有dev這資料夾?</p>
+
+<p>​                  也有可能是之前有下過sudo make，而資料夾未被移除?</p>
+
+<p>host =&gt; 主機上bulidroot所需的工具</p>
+
+<p>graphs =&gt; 如果下make graph<em>-de</em>pends等輔助指令，可產生package的相依性、生成的size、</p>
+
+<p>​                   build的時間等等資訊，會放在這個資料夾裡</p>
+
+<h1 id="設定">設定</h1>
+
+<h2 id="cross-compilation-toolchain">Cross-compilation toolchain:</h2>
+
+<h3 id="buildroot-提供兩種toolchain設定">Buildroot 提供兩種toolchain設定:</h3>
+
+<h4 id="1-internal-toolchain-backend">1. internal toolchain backend</h4>
+
+<blockquote>
+  <p>使用Buildroot自帶的toolchain，支援uClibc-ng, glibc and musl，需選擇Linux kernel headers、</p>
+
+  <p>C Library、GCC compiler、binutils等工具和版本。</p>
+</blockquote>
+
+<h4 id="2-external-toolchain-backend">2. external toolchain backend</h4>
+
+<blockquote>
+  <p>有三個方式可選:</p>
+
+  <blockquote>
+    <p>(1) Use a predefined externel toolchain profilw</p>
+
+    <blockquote>
+      <p>讓Buildroot去下載安裝</p>
+    </blockquote>
+
+    <p>(2) Use a predefined externel toolchain profile</p>
+
+    <blockquote>
+      <p>告訴Buildroot這toolchain放在系統那邊，不要去下載安裝</p>
+    </blockquote>
+
+    <p>(3) Use a completely externel toolchain</p>
+
+    <blockquote>
+      <p>通常這是指晶片商提供的toolchain，我們需要指定Toolchain path,Toolchain prefix and External toolchain C library。</p>
+
+      <p>一般而言會提供一個設定檔，執行這個檔案，例如 make XXXX_defconfig。再執行make menuconfig，會看到在menu</p>
+
+      <p>中已經設好了，唯一要手動的是，path和prefix。如果build的時後顯示找不到toolchain，大多是這兩個參數設錯。</p>
+
+      <p><strong>例如:</strong>
+BR2_TOOLCHAIN_EXTERNAL_PATH=”/home/<user>/<work directory="">/armv7-marvell-linux-gnueabihf/"</work></user></p>
+
+      <p>BR2_TOOLCHAIN_EXTERNAL_CUSTOM_PREFIX=”arm-marvell-linux-gnueabihf”</p>
+
+      <p><strong>BusyBox:</strong>
+可用default的BusyBox設定或使用BR2_PACKAGE_BUSYBOX_CONFIG這個參數來讀取已定義好的設定。</p>
+
+      <p>也可使用 make busybox-menuconfig 來編輯BusyBox。</p>
+
+      <p><strong>uClibc:</strong>
+和BusyBox類似，使用BR2_UCLIBC_CONFIG來讀取已定義好的設定。</p>
+
+      <p>也可使用 make uclibc-menuconfig 來編輯BusyBox。</p>
+
+      <p><strong>Linux kernel:</strong>
+使用BR2_LINUX_KERNEL_USE_CUSTOM_CONFIG來讀取已定義好的設定
+使用BR2_LINUX_KERNEL_USE_DEFCONFIG來使用default值
+使用 make linux-menuconfig 來編輯</p>
+
+      <p><strong>Barebox:</strong>
+U-Boot二代，使用上和Linux kernel類似
+使用BR2_LINUX_TARGET_BAREBOX_USE_CUSTOM_CONFIG來讀取已定義好的設定
+使用BR2_LINUX_TARGET_BAREBOX_USE_DEFCONFIG來使用default值
+使用 make barebox-menuconfig 來編輯</p>
+
+      <p><strong>U-Boot:</strong>
+U-Boot板本要2015.04以上
+使用BR2_LINUX_TARGET_UBOOT_USE_CUSTOM_CONFIG來讀取已定義好的設定
+使用BR2_LINUX_TARGET_UBOOT_USE_DEFCONFIG來使用default值
+使用 make uboot-menuconfig 來編輯</p>
+    </blockquote>
+  </blockquote>
+</blockquote>
+
+  </div>
+
+  <span> tags: [
+    
+      
+      <a href="/tag/buildroot"><code class="highligher-rouge"><nobr>buildroot</nobr></code>&nbsp;</a>
+    
+      
+      <a href="/tag/post"><code class="highligher-rouge"><nobr>post</nobr></code>&nbsp;</a>
+    
+  ]</span>
+  <hr/><br/>
+  <h3>相關文章</h3>
+  
+  <div class="related-posts">
+    
+    
+    
+    
+        
+      
+    
+  </div><a class="u-url" href="/2021/08/11/Buildroot-%E7%AD%86%E8%A8%98.html" hidden></a>
+</article>
+
+
+    </main>
+    <footer class="footer">
+      <div class="container">
+        &copy; 2021 Hsueh-Shih's Blog 
+
+      </div>
+    </footer>
+  </body>
+</html>

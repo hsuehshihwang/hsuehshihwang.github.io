@@ -1,4 +1,221 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="https://hsuehshihwang.github.io//feed.xml" rel="self" type="application/atom+xml" /><link href="https://hsuehshihwang.github.io//" rel="alternate" type="text/html" /><updated>2021-08-11T15:42:33+08:00</updated><id>https://hsuehshihwang.github.io//feed.xml</id><title type="html">Hsueh-Shih’s Blog</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">HPLIP, SANE, CUPS, p910nd</title><link href="https://hsuehshihwang.github.io//2021/08/10/HPLIP,-SANE,-CUPS,-p910nd.html" rel="alternate" type="text/html" title="HPLIP, SANE, CUPS, p910nd" /><published>2021-08-10T14:52:00+08:00</published><updated>2021-08-10T14:52:00+08:00</updated><id>https://hsuehshihwang.github.io//2021/08/10/HPLIP,%20SANE,%20CUPS,%20p910nd</id><content type="html" xml:base="https://hsuehshihwang.github.io//2021/08/10/HPLIP,-SANE,-CUPS,-p910nd.html">&lt;p&gt;&lt;strong&gt;介紹：&lt;/strong&gt;&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="https://hsuehshihwang.github.io//feed.xml" rel="self" type="application/atom+xml" /><link href="https://hsuehshihwang.github.io//" rel="alternate" type="text/html" /><updated>2021-08-11T16:23:03+08:00</updated><id>https://hsuehshihwang.github.io//feed.xml</id><title type="html">Hsueh-Shih’s Blog</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">Buildroot 筆記</title><link href="https://hsuehshihwang.github.io//2021/08/11/Buildroot-%E7%AD%86%E8%A8%98.html" rel="alternate" type="text/html" title="Buildroot 筆記" /><published>2021-08-11T16:05:00+08:00</published><updated>2021-08-11T16:05:00+08:00</updated><id>https://hsuehshihwang.github.io//2021/08/11/Buildroot%20%E7%AD%86%E8%A8%98</id><content type="html" xml:base="https://hsuehshihwang.github.io//2021/08/11/Buildroot-%E7%AD%86%E8%A8%98.html">&lt;h1 id=&quot;介紹&quot;&gt;介紹&lt;/h1&gt;
+
+&lt;p&gt;Buildroot是一簡化且自動化處理產生corss-compilation toolchain, root filesystem, Linux Kernel, bootloader的工具，便於開發embedded system。&lt;/p&gt;
+
+&lt;p&gt;Host: 主機、宿主，一般而言就是我們的PC、Notebook
+Target: 目標設備&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;h2 id=&quot;安裝buildroot必須的packages&quot;&gt;安裝Buildroot必須的packages:&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Build tools:
+    &lt;ul&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;which&lt;/code&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sed&lt;/code&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;make&lt;/code&gt; (version 3.81 or any later)&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;binutils&lt;/code&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;build-essential&lt;/code&gt; (only for Debian based systems)&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gcc&lt;/code&gt; (version 2.95 or any later)&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;g++&lt;/code&gt; (version 2.95 or any later)&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bash&lt;/code&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;patch&lt;/code&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gzip&lt;/code&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bzip2&lt;/code&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;perl&lt;/code&gt; (version 5.8.7 or any later)&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tar&lt;/code&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cpio&lt;/code&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;python&lt;/code&gt; (version 2.6 or any later)&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;unzip&lt;/code&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rsync&lt;/code&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;file&lt;/code&gt; (must be in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/usr/bin/file&lt;/code&gt;)&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bc&lt;/code&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Source fetching tools:
+    &lt;ul&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;wget&lt;/code&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;可選是否要安裝的packages&quot;&gt;可選是否要安裝的packages:&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;ul&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ncurses5&lt;/code&gt; to use the &lt;em&gt;menuconfig&lt;/em&gt; interface&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;qt4&lt;/code&gt; to use the &lt;em&gt;xconfig&lt;/em&gt; interface(sudo apt-get install qt4-qmake libqt4-dev)&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;glib2&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gtk2&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;glade2&lt;/code&gt; to use the &lt;em&gt;gconfig&lt;/em&gt; interface&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Source fetching tools:
+    &lt;ul&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bazaar&lt;/code&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cvs&lt;/code&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git&lt;/code&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mercurial&lt;/code&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rsync&lt;/code&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;scp&lt;/code&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;subversion&lt;/code&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Java-related packages:
+    &lt;ul&gt;
+      &lt;li&gt;The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;javac&lt;/code&gt; compiler&lt;/li&gt;
+      &lt;li&gt;The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;jar&lt;/code&gt; tool&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Documentation generation tools:
+    &lt;ul&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;asciidoc&lt;/code&gt;, version 8.6.3 or higher&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;w3m&lt;/code&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;python&lt;/code&gt; with the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;argparse&lt;/code&gt; module (automatically present in 2.7+ and 3.2+)&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dblatex&lt;/code&gt; (required for the pdf manual only)&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Graph generation tools:
+    &lt;ul&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;graphviz&lt;/code&gt; to use &lt;em&gt;graph-depends&lt;/em&gt; and *&lt;pkg&gt;-graph-depends*&lt;/pkg&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;python-matplotlib&lt;/code&gt; to use &lt;em&gt;graph-build&lt;/em&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;空間夠的話，建議全部一起安裝，例如git或graphviz(make graph-depends時會用到)又或python都很常用。&lt;/p&gt;
+
+&lt;h2 id=&quot;quick-start&quot;&gt;Quick Start:&lt;/h2&gt;
+
+&lt;p&gt;首先我們需要產生一個 &lt;strong&gt;.config&lt;/strong&gt;檔，可使用下面四種指令，用圖形化的視窗來設定:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;make menuconfig最基本也是最多人用的&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;make nconfig 新的圖形介面&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;make xconfig Qt-based的圖形介面&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;make gconfig GTK-based的圖形介面&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;只是畫面不同，重點在設定完，會在目前目錄下(也就是top-level的目錄)產生一個&lt;strong&gt;.config&lt;/strong&gt;檔(隱藏檔)，這裡面有你設定好的設定，之後也可直接更改此檔來做設定。設定完後下make，沒意外的話，一切就會自動完成。&lt;/p&gt;
+
+&lt;p&gt;要注意的是，這裡不能在top-level資料夾下 make -jN的指令，一般我們會在4核下的cpu 裡下make -j8來進行多工的處理，可是Buildroot不支援在top-level的並行處理。取而代之的是使用BR2_JLEVEL。這選項告訴Buildroot在每個獨立的package裡下make -jN，例如修改&lt;strong&gt;.config&lt;/strong&gt;的BR2_JLEVEL=8。&lt;/p&gt;
+
+&lt;h3 id=&quot;make的流程&quot;&gt;make的流程:&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;download source files (as required);&lt;/li&gt;
+  &lt;li&gt;configure, build and install the cross-compilation toolchain, or simply import an external toolchain;&lt;/li&gt;
+  &lt;li&gt;configure, build and install selected target packages;&lt;/li&gt;
+  &lt;li&gt;build a kernel image, if selected;&lt;/li&gt;
+  &lt;li&gt;build a bootloader image, if selected;&lt;/li&gt;
+  &lt;li&gt;create a root filesystem in selected formats.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;最後結果輸出在output資料夾。&lt;/p&gt;
+
+&lt;h3 id=&quot;output資料夾內容&quot;&gt;output資料夾內容:&lt;/h3&gt;
+
+&lt;p&gt;images =&amp;gt; kernel image,bootloader, root filesystem images等等&lt;/p&gt;
+
+&lt;p&gt;build =&amp;gt; 所有下載或自定義build好的packages&lt;/p&gt;
+
+&lt;p&gt;staging =&amp;gt; 這資料包含一些研發工具，用來compile libraries and applications給target使用&lt;/p&gt;
+
+&lt;p&gt;target =&amp;gt; 目標設備的root filesystem範本，依照手冊說明，不包含dev，因為make的時後並&lt;/p&gt;
+
+&lt;p&gt;​                 不是用root啟動，這裡比較奇怪，我沒有下sudo make，可是target底下也是有dev這資料夾?&lt;/p&gt;
+
+&lt;p&gt;​                  也有可能是之前有下過sudo make，而資料夾未被移除?&lt;/p&gt;
+
+&lt;p&gt;host =&amp;gt; 主機上bulidroot所需的工具&lt;/p&gt;
+
+&lt;p&gt;graphs =&amp;gt; 如果下make graph&lt;em&gt;-de&lt;/em&gt;pends等輔助指令，可產生package的相依性、生成的size、&lt;/p&gt;
+
+&lt;p&gt;​                   build的時間等等資訊，會放在這個資料夾裡&lt;/p&gt;
+
+&lt;h1 id=&quot;設定&quot;&gt;設定&lt;/h1&gt;
+
+&lt;h2 id=&quot;cross-compilation-toolchain&quot;&gt;Cross-compilation toolchain:&lt;/h2&gt;
+
+&lt;h3 id=&quot;buildroot-提供兩種toolchain設定&quot;&gt;Buildroot 提供兩種toolchain設定:&lt;/h3&gt;
+
+&lt;h4 id=&quot;1-internal-toolchain-backend&quot;&gt;1. internal toolchain backend&lt;/h4&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;使用Buildroot自帶的toolchain，支援uClibc-ng, glibc and musl，需選擇Linux kernel headers、&lt;/p&gt;
+
+  &lt;p&gt;C Library、GCC compiler、binutils等工具和版本。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h4 id=&quot;2-external-toolchain-backend&quot;&gt;2. external toolchain backend&lt;/h4&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;有三個方式可選:&lt;/p&gt;
+
+  &lt;blockquote&gt;
+    &lt;p&gt;(1) Use a predefined externel toolchain profilw&lt;/p&gt;
+
+    &lt;blockquote&gt;
+      &lt;p&gt;讓Buildroot去下載安裝&lt;/p&gt;
+    &lt;/blockquote&gt;
+
+    &lt;p&gt;(2) Use a predefined externel toolchain profile&lt;/p&gt;
+
+    &lt;blockquote&gt;
+      &lt;p&gt;告訴Buildroot這toolchain放在系統那邊，不要去下載安裝&lt;/p&gt;
+    &lt;/blockquote&gt;
+
+    &lt;p&gt;(3) Use a completely externel toolchain&lt;/p&gt;
+
+    &lt;blockquote&gt;
+      &lt;p&gt;通常這是指晶片商提供的toolchain，我們需要指定Toolchain path,Toolchain prefix and External toolchain C library。&lt;/p&gt;
+
+      &lt;p&gt;一般而言會提供一個設定檔，執行這個檔案，例如 make XXXX_defconfig。再執行make menuconfig，會看到在menu&lt;/p&gt;
+
+      &lt;p&gt;中已經設好了，唯一要手動的是，path和prefix。如果build的時後顯示找不到toolchain，大多是這兩個參數設錯。&lt;/p&gt;
+
+      &lt;p&gt;&lt;strong&gt;例如:&lt;/strong&gt;
+BR2_TOOLCHAIN_EXTERNAL_PATH=”/home/&lt;user&gt;/&lt;work directory=&quot;&quot;&gt;/armv7-marvell-linux-gnueabihf/&quot;&lt;/work&gt;&lt;/user&gt;&lt;/p&gt;
+
+      &lt;p&gt;BR2_TOOLCHAIN_EXTERNAL_CUSTOM_PREFIX=”arm-marvell-linux-gnueabihf”&lt;/p&gt;
+
+      &lt;p&gt;&lt;strong&gt;BusyBox:&lt;/strong&gt;
+可用default的BusyBox設定或使用BR2_PACKAGE_BUSYBOX_CONFIG這個參數來讀取已定義好的設定。&lt;/p&gt;
+
+      &lt;p&gt;也可使用 make busybox-menuconfig 來編輯BusyBox。&lt;/p&gt;
+
+      &lt;p&gt;&lt;strong&gt;uClibc:&lt;/strong&gt;
+和BusyBox類似，使用BR2_UCLIBC_CONFIG來讀取已定義好的設定。&lt;/p&gt;
+
+      &lt;p&gt;也可使用 make uclibc-menuconfig 來編輯BusyBox。&lt;/p&gt;
+
+      &lt;p&gt;&lt;strong&gt;Linux kernel:&lt;/strong&gt;
+使用BR2_LINUX_KERNEL_USE_CUSTOM_CONFIG來讀取已定義好的設定
+使用BR2_LINUX_KERNEL_USE_DEFCONFIG來使用default值
+使用 make linux-menuconfig 來編輯&lt;/p&gt;
+
+      &lt;p&gt;&lt;strong&gt;Barebox:&lt;/strong&gt;
+U-Boot二代，使用上和Linux kernel類似
+使用BR2_LINUX_TARGET_BAREBOX_USE_CUSTOM_CONFIG來讀取已定義好的設定
+使用BR2_LINUX_TARGET_BAREBOX_USE_DEFCONFIG來使用default值
+使用 make barebox-menuconfig 來編輯&lt;/p&gt;
+
+      &lt;p&gt;&lt;strong&gt;U-Boot:&lt;/strong&gt;
+U-Boot板本要2015.04以上
+使用BR2_LINUX_TARGET_UBOOT_USE_CUSTOM_CONFIG來讀取已定義好的設定
+使用BR2_LINUX_TARGET_UBOOT_USE_DEFCONFIG來使用default值
+使用 make uboot-menuconfig 來編輯&lt;/p&gt;
+    &lt;/blockquote&gt;
+  &lt;/blockquote&gt;
+&lt;/blockquote&gt;</content><author><name></name></author><category term="buildroot" /><category term="post" /><summary type="html">介紹 Buildroot是一簡化且自動化處理產生corss-compilation toolchain, root filesystem, Linux Kernel, bootloader的工具，便於開發embedded system。 Host: 主機、宿主，一般而言就是我們的PC、Notebook Target: 目標設備</summary></entry><entry><title type="html">HPLIP, SANE, CUPS, p910nd</title><link href="https://hsuehshihwang.github.io//2021/08/10/HPLIP,-SANE,-CUPS,-p910nd.html" rel="alternate" type="text/html" title="HPLIP, SANE, CUPS, p910nd" /><published>2021-08-10T14:52:00+08:00</published><updated>2021-08-10T14:52:00+08:00</updated><id>https://hsuehshihwang.github.io//2021/08/10/HPLIP,%20SANE,%20CUPS,%20p910nd</id><content type="html" xml:base="https://hsuehshihwang.github.io//2021/08/10/HPLIP,-SANE,-CUPS,-p910nd.html">&lt;p&gt;&lt;strong&gt;介紹：&lt;/strong&gt;&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;HPLIP是HP針對HP掃描器、印表機提供的Linux OpenSource驅動程式組合包。&lt;/li&gt;
