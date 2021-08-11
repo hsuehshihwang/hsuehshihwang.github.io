@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Hsueh-Shih's Blog</title>
+<link rel="stylesheet" href="/assets/main.css">
+<link rel="stylesheet" href="/assets/sticky-footer-navbar.css">
+<script src="/js/jquery.slim.min.js"></script>
+<script src="/js/umd/popper.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/brands.min.js"></script>
+<script src="/js/solid.min.js"></script>
+<script src="/js/fontawesome.min.js"></script>
+
+
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>HPLIP, SANE, CUPS, p910nd | Hsueh-Shih’s Blog</title>
+<meta name="generator" content="Jekyll v4.2.0" />
+<meta property="og:title" content="HPLIP, SANE, CUPS, p910nd" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="介紹： HPLIP是HP針對HP掃描器、印表機提供的Linux OpenSource驅動程式組合包。 SANE是Linux上的掃描器的軟體，裡面包含了網路掃描、掃描的前端軟體介面、掃描器驅動程式。 CUPS、p910nd都是Linux上的列印伺服器，p910nd是non-spooling的列印伺服器，CUPS則是spooling伺服器。" />
+<meta property="og:description" content="介紹： HPLIP是HP針對HP掃描器、印表機提供的Linux OpenSource驅動程式組合包。 SANE是Linux上的掃描器的軟體，裡面包含了網路掃描、掃描的前端軟體介面、掃描器驅動程式。 CUPS、p910nd都是Linux上的列印伺服器，p910nd是non-spooling的列印伺服器，CUPS則是spooling伺服器。" />
+<link rel="canonical" href="https://hsuehshihwang.github.io//2021/08/10/HPLIP,-SANE,-CUPS,-p910nd.html" />
+<meta property="og:url" content="https://hsuehshihwang.github.io//2021/08/10/HPLIP,-SANE,-CUPS,-p910nd.html" />
+<meta property="og:site_name" content="Hsueh-Shih’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-08-10T14:52:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="HPLIP, SANE, CUPS, p910nd" />
+<script type="application/ld+json">
+{"headline":"HPLIP, SANE, CUPS, p910nd","dateModified":"2021-08-10T14:52:00+08:00","datePublished":"2021-08-10T14:52:00+08:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://hsuehshihwang.github.io//2021/08/10/HPLIP,-SANE,-CUPS,-p910nd.html"},"url":"https://hsuehshihwang.github.io//2021/08/10/HPLIP,-SANE,-CUPS,-p910nd.html","description":"介紹： HPLIP是HP針對HP掃描器、印表機提供的Linux OpenSource驅動程式組合包。 SANE是Linux上的掃描器的軟體，裡面包含了網路掃描、掃描的前端軟體介面、掃描器驅動程式。 CUPS、p910nd都是Linux上的列印伺服器，p910nd是non-spooling的列印伺服器，CUPS則是spooling伺服器。","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+  </head>
+  <body>
+    <header>
+      <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark">
+  <a class="navbar-brand" href="/">Hsueh-Shih's Blog</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item ">
+        <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="/about">About Me</a>
+      </li>
+      <!--
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Dropdown
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#">Action</a>
+          <a class="dropdown-item" href="#">Another action</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">Something else here</a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link disabled" href="#">Disabled</a>
+      </li>
+      -->
+    </ul>
+    <!-- TODO: search form
+    <form class="form-inline my-2 my-lg-0">
+      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form>
+    -->
+  </div>
+</nav>
+
+    </header>
+    <main role="main" class="container pb-5">
+      <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <span> tags: [
+    
+      
+      <a href="/tag/usb"><code class="highligher-rouge"><nobr>usb</nobr></code>&nbsp;</a>
+    
+      
+      <a href="/tag/printer"><code class="highligher-rouge"><nobr>printer</nobr></code>&nbsp;</a>
+    
+      
+      <a href="/tag/post"><code class="highligher-rouge"><nobr>post</nobr></code>&nbsp;</a>
+    
+  ]</span>
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">HPLIP, SANE, CUPS, p910nd</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2021-08-10T14:52:00+08:00" itemprop="datePublished">
+        Aug 10, 2021
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p><strong>介紹：</strong></p>
+
+<ul>
+  <li>HPLIP是HP針對HP掃描器、印表機提供的Linux OpenSource驅動程式組合包。</li>
+  <li>SANE是Linux上的掃描器的軟體，裡面包含了網路掃描、掃描的前端軟體介面、掃描器驅動程式。</li>
+  <li>CUPS、p910nd都是Linux上的列印伺服器，p910nd是non-spooling的列印伺服器，CUPS則是spooling伺服器。</li>
+</ul>
+
+<!--more-->
+
+<p><strong>p910nd與CUPS區別和兩者架構：</strong><br />
+<strong>p910nd：</strong><br />
+參考：<br />
+<a href="http://digiland.tw/viewtopic.php?id=926">[Oleg/Lly/CDMA@wifi] p910nd 列印伺服器(無spool)</a></p>
+
+<p>從參考的作者文中可以知道，<br />
+p910nd的安裝，主要2個步驟：</p>
+
+<ol>
+  <li>確定Linux Kernel內USB Printer有支援</li>
+  <li>p910nd daemon有啟動，並指定Port、USB Printer的Device File</li>
+</ol>
+
+<p>步驟完成，p910nd就會動了，而且p910nd需求極小，<br />
+幾乎沒有相依太多library就能動作。</p>
+
+<p>再看看下面這個參考：<br />
+<a href="http://www.dd-wrt.com/wiki/index.php/Printer_Sharing#Workstation_setup">DD-WRT Printer Sharing</a></p>
+
+<p>裡面描述了p910nd安裝外，也描述了Client端的安裝，<br />
+包括CUPS、Linux、Windows、MacOSX的安裝介紹。</p>
+
+<p>簡單白話的說，<br />
+p910nd本身只是USB&lt;-&gt;Socket的轉譯器，<br />
+它不負責印表機溝通，從Socket來的資料直接轉入USB當中，<br />
+因此所有印表機的溝通，列印資料的轉譯，都要由Client端負責，<br />
+印表機工作的排程，則要由印表機自己負責。</p>
+
+<p>因此p910nd優點是library相依性低，也不需要複雜的額外工作，<br />
+至於Client端，<br />
+Windows直接有原廠的驅動程式，<br />
+Linux直接有CUPS搭配HPLIP就能達成，<br />
+macOSX看起來也是有驅動程式，目前試驗HP不行。</p>
+
+<p><strong>CUPS：</strong><br />
+直接看系統方塊圖(<a href="http://en.wikipedia.org/wiki/CUPS">wiki</a>)：</p>
+
+<p><a href="http://1.bp.blogspot.com/-KiPXp0m60S4/VLE7OhJgIrI/AAAAAAAAD9c/bSeV9oIOVyA/s1600/CUPS-block-diagram.png"><img src="http://1.bp.blogspot.com/-KiPXp0m60S4/VLE7OhJgIrI/AAAAAAAAD9c/bSeV9oIOVyA/s1600/CUPS-block-diagram.png" alt="" /></a></p>
+
+<p>CUPS是一整套完整的列印伺服器程式，<br />
+裡面包含了使用者管理、列印語言轉譯、列印Queue、網路列印…等多個功能。</p>
+
+<p>我們單從CUPS的系統方塊圖來看，<br />
+它前面提供了各種檔案格式的轉譯器，轉譯成PostScript，<br />
+中間能將PostScript轉譯成各種列印語言，像是PCL…等，<br />
+後面CUPS backend又能串接包括本機的USB、SerialPort…等，網路的IPP、網路芳鄰、AppleTalk…等網路介面。</p>
+
+<p>因此可以知道它是非常龐大的列印系統，<br />
+從前端應用程式的檔案開始，就一路透過它層層處理，最後一樣透過它送到印表機上。</p>
+
+<p>優點當然是系統功能完整，但缺點就是相依的library多，<br />
+程式的設定項目多比較複雜，<br />
+在小型系統上就比較不方便移植，<br />
+因此比較早期的OpenWRT、DD-WRT都只支援p910nd，</p>
+
+<p>較新的版本則已經有提供cups，</p>
+
+<p>自行移植則會遇到比較多的編譯問題，我自己最後編譯出來，執行後，網頁點幾下還是會segfault。</p>
+
+<p><strong>SANE：</strong></p>
+
+<p>SANE是Linux上最主要的掃描器解決方案，可能也是唯一的解決方案，</p>
+
+<p>有支援Linux的掃描器，大概都是提供SANE的驅動程式。</p>
+
+<p>SANE分前端(frontend)和後端(backend)，</p>
+
+<p>SANE frontend主要提供給應用程式，送掃描動作給SANE；</p>
+
+<p>SANE backend主要就是SANE介面界接掃描器的驅動程式。</p>
+
+<p>SANE有提供一個特別的SANE frontend，叫做net，</p>
+
+<p>它能讓SANE能透過網路接收SANE的掃描動作，達成網路控制掃描器掃描。</p>
+
+<p><strong>HPLIP：</strong></p>
+
+<p>前面提這麼多，原因是HPLIP相依的東西很多，</p>
+
+<p>上述幾個是最關鍵的幾個。</p>
+
+<p>參考：</p>
+
+<p><a href="http://hplipopensource.com/node/128">HPLIP Technical Overview</a></p>
+
+<p>直接看參考中的系統方塊圖：</p>
+
+<p><a href="http://hplip.sourceforge.net/images/hplip_architecture.png"><img src="http://hplip.sourceforge.net/images/hplip_architecture.png" alt="" /></a></p>
+
+<p>拆開來看HPLIP各項元件，我們先只看掃描器部份，看hp-scan那個垂直的部份。</p>
+
+<p>在HPLIP中，HP的掃描器是透過SANE支援的。</p>
+
+<p><strong>hp-scan：</strong></p>
+
+<p>hp-scan是HPLIP提供的掃描器工具程式，但hp-scan實際上是個SANE frontend，</p>
+
+<p>就是透過SANE backend掃描。</p>
+
+<p><strong>libsane-hpaio：</strong></p>
+
+<p>HPLIP提供了libsane-hpaio這個SANE backend用的延伸library，</p>
+
+<p>libsane-hpaio讓SANE backend透過它來操作HP掃描器，</p>
+
+<p>我不很確定裡面有沒有包含驅動程式，或是否有包含部份的驅動程式，</p>
+
+<p>但這個library非常重要，SANE需要靠它才能操作HP掃描器，</p>
+
+<p>在SANE中，它被稱為hpaio的SANE backend。</p>
+
+<p><strong>hpmud：</strong></p>
+
+<p>HPLIP實際操作HP印表機、掃描器的I/O library，</p>
+
+<p>所有的工作都透過這個library傳遞給USB或網路(網路印表機、網路掃描器時)，</p>
+
+<p>它的下層，就是USB library或Socket，直接連結印表機、掃描器。</p>
+
+<p><strong>D-Bus：</strong></p>
+
+<p>掃描器這路看完後，我們來看D-BUS。</p>
+
+<p>在HPLIP中，各個應用程式和元件間溝通都是透過D-BUS，</p>
+
+<p>這些應用程式包括掃描器左邊那幾個小顆的，</p>
+
+<p>包括hp-systray、hp-toolbox、hp-sendfax這幾個工具程式，</p>
+
+<p>還有libsane-hpaio這個SANE backend。</p>
+
+<p>這些元件和程式的溝通都透過D-Bus，</p>
+
+<p>而D-Bus本身在HPLIP則是透過hp/hpfax backend管理。</p>
+
+<p>關於D-Bus，這邊不多介紹，簡單的說，它是Linux上IPC的一種，</p>
+
+<p>各應用程式可以透過D-Bus互相溝通，</p>
+
+<p>典型的例子是，播放程式透過D-Bus提供出播放音樂的資訊，</p>
+
+<p>Skype這類的通訊軟體透過D-Bus可以得到並顯示你正在播放的音樂資訊。</p>
+
+<p><strong>部份總結：</strong></p>
+
+<p>到目前為止，</p>
+
+<p>先整理下HPLIP做了什麼？搞了哪些元件？要在小系統上編譯，需要編譯哪些東西？</p>
+
+<p>1.</p>
+
+<p>HPLIP最核心的I/O主要是hpmud，負責最終和硬體通訊</p>
+
+<p>2.</p>
+
+<p>HPLIP使用SANE做為掃描器核心，要能掃描，除了SANE要ok之外，</p>
+
+<p>hpaio backend要確定ok，並有放置在SANE backend的目錄內</p>
+
+<p>3.</p>
+
+<p>hp-scan只是個SANE frontend，不用管它，用其他SANE程式效果一樣</p>
+
+<p>4.</p>
+
+<p>D-Bus在HPLIP是各程式的溝通平台，單純使用掃描功能，不用管它</p>
+
+<p>5.</p>
+
+<p>如果搭配p910nd，到目前為止的資訊已經足夠了，其他元件都只跟列印和CUPS相關</p>
+
+<p><strong>HPLIP與CUPS：</strong></p>
+
+<p>前面CUPS提到，CUPS架構很大，CUPS中間有許多轉譯器提供各種轉譯，</p>
+
+<p>HPLIP針對CUPS實做了hpcups、hpcupsfax…等幾個轉譯器，</p>
+
+<p>接收了從CUPS收到的列印資料(應該是PostScript)後，</p>
+
+<p>透過這些轉譯器轉譯，送給hp/hpfax backend，再透過hpmud送到印表機。</p>
+
+<p>這裡我比較不清楚的地方是，</p>
+
+<p>轉譯器轉譯後，是直接在轉譯器內送到hp/hpfax backend，</p>
+
+<p>還是轉譯器轉譯後，回到CUPS，再由CUPS送到hp/hpfax backend進行列印，</p>
+
+<p>這是圖上沒有表示的部份。</p>
+
+  </div>
+
+  <span> tags: [
+    
+      
+      <a href="/tag/usb"><code class="highligher-rouge"><nobr>usb</nobr></code>&nbsp;</a>
+    
+      
+      <a href="/tag/printer"><code class="highligher-rouge"><nobr>printer</nobr></code>&nbsp;</a>
+    
+      
+      <a href="/tag/post"><code class="highligher-rouge"><nobr>post</nobr></code>&nbsp;</a>
+    
+  ]</span>
+  <hr/><br/>
+  <h3>相關文章</h3>
+  
+  <div class="related-posts">
+    
+    
+    
+    
+        
+      
+    
+    
+      
+      <a href="/2021/08/09/USB%E7%9A%84%E7%A8%AE%E9%A1%9E(OHCI-UHCI-EHCI-XHCI).html">USB的種類(OHCI、UHCI、EHCI、XHCI)</a><br>
+      
+        
+      
+    
+  </div><a class="u-url" href="/2021/08/10/HPLIP,-SANE,-CUPS,-p910nd.html" hidden></a>
+</article>
+
+
+    </main>
+    <footer class="footer">
+      <div class="container">
+        &copy; 2021 Hsueh-Shih's Blog 
+
+      </div>
+    </footer>
+  </body>
+</html>

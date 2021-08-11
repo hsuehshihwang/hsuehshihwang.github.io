@@ -6,9 +6,7 @@ tags:
   - usb
   - printer
   - post
-title_variable: "example"
 ---
-### HPLIP、SANE、CUPS、p910nd
 
 **介紹：**  
 

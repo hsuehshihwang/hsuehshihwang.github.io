@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Hsueh-Shih's Blog</title>
+<link rel="stylesheet" href="/assets/main.css">
+<link rel="stylesheet" href="/assets/sticky-footer-navbar.css">
+<script src="/js/jquery.slim.min.js"></script>
+<script src="/js/umd/popper.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/brands.min.js"></script>
+<script src="/js/solid.min.js"></script>
+<script src="/js/fontawesome.min.js"></script>
+
+
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Linux Device Model 三角關係 | Hsueh-Shih’s Blog</title>
+<meta name="generator" content="Jekyll v4.2.0" />
+<meta property="og:title" content="Linux Device Model 三角關係" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="原文出處：https://www.cntofu.com/book/46/linux_driver/linux_device_model.md" />
+<meta property="og:description" content="原文出處：https://www.cntofu.com/book/46/linux_driver/linux_device_model.md" />
+<link rel="canonical" href="https://hsuehshihwang.github.io//2021/08/10/Linux-Device-Model-%E4%B8%89%E8%A7%92%E9%97%9C%E4%BF%82.html" />
+<meta property="og:url" content="https://hsuehshihwang.github.io//2021/08/10/Linux-Device-Model-%E4%B8%89%E8%A7%92%E9%97%9C%E4%BF%82.html" />
+<meta property="og:site_name" content="Hsueh-Shih’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-08-10T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Linux Device Model 三角關係" />
+<script type="application/ld+json">
+{"headline":"Linux Device Model 三角關係","dateModified":"2021-08-10T00:00:00+08:00","datePublished":"2021-08-10T00:00:00+08:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://hsuehshihwang.github.io//2021/08/10/Linux-Device-Model-%E4%B8%89%E8%A7%92%E9%97%9C%E4%BF%82.html"},"url":"https://hsuehshihwang.github.io//2021/08/10/Linux-Device-Model-%E4%B8%89%E8%A7%92%E9%97%9C%E4%BF%82.html","description":"原文出處：https://www.cntofu.com/book/46/linux_driver/linux_device_model.md","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+  </head>
+  <body>
+    <header>
+      <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark">
+  <a class="navbar-brand" href="/">Hsueh-Shih's Blog</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item ">
+        <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="/about">About Me</a>
+      </li>
+      <!--
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Dropdown
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#">Action</a>
+          <a class="dropdown-item" href="#">Another action</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">Something else here</a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link disabled" href="#">Disabled</a>
+      </li>
+      -->
+    </ul>
+    <!-- TODO: search form
+    <form class="form-inline my-2 my-lg-0">
+      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form>
+    -->
+  </div>
+</nav>
+
+    </header>
+    <main role="main" class="container pb-5">
+      <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <span> tags: [
+    
+      
+      <a href="/tag/kernel"><code class="highligher-rouge"><nobr>kernel</nobr></code>&nbsp;</a>
+    
+      
+      <a href="/tag/driver"><code class="highligher-rouge"><nobr>driver</nobr></code>&nbsp;</a>
+    
+  ]</span>
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Linux Device Model 三角關係</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2021-08-10T00:00:00+08:00" itemprop="datePublished">
+        Aug 10, 2021
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>原文出處：https://www.cntofu.com/book/46/linux_driver/linux_device_model.md</p>
+
+<p><a href="https://img.cntofu.com/book/note/linux_driver/images/1343287430_3988.PNG"><img src="https://img.cntofu.com/book/note/linux_driver/images/1343287430_3988.PNG" alt="" /></a></p>
+
+<!--more-->
+<p>Linux Device Model由bus, device, driver所組成。其關係為: bus是cpu與device溝通的橋樑，而driver賦與device行為的能力。因此有人說，device是男人，driver是女人，而bus則是媒人。媒人有match的功能，讓男人與女人彼此 認識。在coldplug的時代，男人先登記後，由媒人去match女人。而後來的hotplug，則讓女人先提供資訊，讓後來有意願的男人match。 device與driver對bus而言，就沒有一定誰先誰後了。</p>
+
+<h3 id="基礎">基礎</h3>
+
+<p>kobject做為LDM的最基本結構，提供了reference count (kref)、sysfs的dirent和hotplug相的的event等其他屬性。bus, device, driver都會是一個kobject，意即其struct都內含一個kobject。</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">include</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="n">kobject</span><span class="p">.</span><span class="n">h</span>
+
+<span class="k">struct</span> <span class="n">kobject</span> <span class="p">{</span>
+    <span class="k">const</span> <span class="kt">char</span>        <span class="o">*</span><span class="n">name</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">list_head</span>    <span class="n">entry</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">kobject</span>        <span class="o">*</span><span class="n">parent</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">kset</span>        <span class="o">*</span><span class="n">kset</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">kobj_type</span>    <span class="o">*</span><span class="n">ktype</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">sysfs_dirent</span>    <span class="o">*</span><span class="n">sd</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">kref</span>        <span class="n">kref</span><span class="p">;</span>
+    <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">state_initialized</span><span class="o">:</span><span class="mi">1</span><span class="p">;</span>
+    <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">state_in_sysfs</span><span class="o">:</span><span class="mi">1</span><span class="p">;</span>
+    <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">state_add_uevent_sent</span><span class="o">:</span><span class="mi">1</span><span class="p">;</span>
+    <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">state_remove_uevent_sent</span><span class="o">:</span><span class="mi">1</span><span class="p">;</span>
+    <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">uevent_suppress</span><span class="o">:</span><span class="mi">1</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>kset理解為kobject的集合。可以想像為pci bus是一個kset，而掛在pci bus上的一個個device / driver的kobject為其成員。</p>
+
+<h3 id="結構">結構</h3>
+
+<p>include/linux/device.h</p>
+
+<h3 id="先看bus">先看bus</h3>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">bus_type</span> <span class="p">{</span>
+    <span class="k">const</span> <span class="kt">char</span>        <span class="o">*</span><span class="n">name</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">bus_attribute</span>    <span class="o">*</span><span class="n">bus_attrs</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">device_attribute</span>    <span class="o">*</span><span class="n">dev_attrs</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">driver_attribute</span>    <span class="o">*</span><span class="n">drv_attrs</span><span class="p">;</span>
+
+    <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">match</span><span class="p">)(</span><span class="k">struct</span> <span class="n">device</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span> <span class="k">struct</span> <span class="n">device_driver</span> <span class="o">*</span><span class="n">drv</span><span class="p">);</span>
+    <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">uevent</span><span class="p">)(</span><span class="k">struct</span> <span class="n">device</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span> <span class="k">struct</span> <span class="n">kobj_uevent_env</span> <span class="o">*</span><span class="n">env</span><span class="p">);</span>
+    <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">probe</span><span class="p">)(</span><span class="k">struct</span> <span class="n">device</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+    <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">remove</span><span class="p">)(</span><span class="k">struct</span> <span class="n">device</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+    <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">shutdown</span><span class="p">)(</span><span class="k">struct</span> <span class="n">device</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+    <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">suspend</span><span class="p">)(</span><span class="k">struct</span> <span class="n">device</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span> <span class="n">pm_message_t</span> <span class="n">state</span><span class="p">);</span>
+    <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">resume</span><span class="p">)(</span><span class="k">struct</span> <span class="n">device</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+
+    <span class="k">const</span> <span class="k">struct</span> <span class="n">dev_pm_ops</span> <span class="o">*</span><span class="n">pm</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">bus_type_private</span> <span class="o">*</span><span class="n">p</span><span class="p">;</span> <span class="c1">//2.6.19後把device和driver包在新的struct</span>
+<span class="p">};</span>
+
+<span class="k">struct</span> <span class="n">bus_type_private</span> <span class="p">{</span>
+    <span class="k">struct</span> <span class="n">kset</span> <span class="n">subsys</span><span class="p">;</span>  <span class="c1">//代表自己，而kset本身也是一種kobject</span>
+    <span class="k">struct</span> <span class="n">kset</span> <span class="o">*</span><span class="n">drivers_kset</span><span class="p">;</span> <span class="c1">//該bus的driver集合</span>
+    <span class="k">struct</span> <span class="n">kset</span> <span class="o">*</span><span class="n">devices_kset</span><span class="p">;</span> <span class="c1">//該bus的 device集合</span>
+    <span class="k">struct</span> <span class="n">klist</span> <span class="n">klist_devices</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">klist</span> <span class="n">klist_drivers</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">blocking_notifier_head</span> <span class="n">bus_notifier</span><span class="p">;</span>
+    <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">drivers_autoprobe</span><span class="o">:</span><span class="mi">1</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">bus_type</span> <span class="o">*</span><span class="n">bus</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<h3 id="再來是device">再來是device</h3>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">device</span> <span class="p">{</span>
+    <span class="k">struct</span> <span class="n">device</span>        <span class="o">*</span><span class="n">parent</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">device_private</span>    <span class="o">*</span><span class="n">p</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">kobject</span> <span class="n">kobj</span><span class="p">;</span>
+    <span class="k">const</span> <span class="kt">char</span>        <span class="o">*</span><span class="n">init_name</span><span class="p">;</span> <span class="cm">/* initial name of the device */</span>
+    <span class="k">struct</span> <span class="n">device_type</span>    <span class="o">*</span><span class="n">type</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">mutex</span>        <span class="n">mutex</span><span class="p">;</span>    <span class="cm">/* mutex to synchronize calls to its driver.*/</span>
+    <span class="k">struct</span> <span class="n">bus_type</span>    <span class="o">*</span><span class="n">bus</span><span class="p">;</span>        <span class="cm">/* type of bus device is on */</span> <span class="c1">//指定要掛在哪條bus</span>
+    <span class="k">struct</span> <span class="n">device_driver</span> <span class="o">*</span><span class="n">driver</span><span class="p">;</span>    <span class="cm">/* which driver has allocated this  //該device所 bind的driver device */</span>
+    <span class="kt">void</span>        <span class="o">*</span><span class="n">platform_data</span><span class="p">;</span>    <span class="cm">/* Platform specific data, device core doesn't touch it */</span>
+    <span class="k">struct</span> <span class="n">dev_pm_info</span>    <span class="n">power</span><span class="p">;</span>
+<span class="cm">/*...............*/</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<h3 id="最後是driver">最後是driver</h3>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">device_driver</span> <span class="p">{</span>
+    <span class="k">const</span> <span class="kt">char</span>        <span class="o">*</span><span class="n">name</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">bus_type</span>        <span class="o">*</span><span class="n">bus</span><span class="p">;</span>  <span class="c1">//一樣是用來指定要去哪條bus做 match</span>
+    <span class="k">struct</span> <span class="n">module</span>        <span class="o">*</span><span class="n">owner</span><span class="p">;</span>
+    <span class="k">const</span> <span class="kt">char</span>        <span class="o">*</span><span class="n">mod_name</span><span class="p">;</span>    <span class="cm">/* used for built-in modules */</span>
+    <span class="n">bool</span> <span class="n">suppress_bind_attrs</span><span class="p">;</span>    <span class="cm">/* disables bind/unbind via sysfs */</span>
+
+<span class="cp">#if defined(CONFIG_OF)
+</span>    <span class="k">const</span> <span class="k">struct</span> <span class="n">of_device_id</span>    <span class="o">*</span><span class="n">of_match_table</span><span class="p">;</span>
+<span class="cp">#endif
+</span>
+    <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">probe</span><span class="p">)</span> <span class="p">(</span><span class="k">struct</span> <span class="n">device</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+    <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">remove</span><span class="p">)</span> <span class="p">(</span><span class="k">struct</span> <span class="n">device</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+    <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">shutdown</span><span class="p">)</span> <span class="p">(</span><span class="k">struct</span> <span class="n">device</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+    <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">suspend</span><span class="p">)</span> <span class="p">(</span><span class="k">struct</span> <span class="n">device</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span> <span class="n">pm_message_t</span> <span class="n">state</span><span class="p">);</span>
+    <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">resume</span><span class="p">)</span> <span class="p">(</span><span class="k">struct</span> <span class="n">device</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+    <span class="k">const</span> <span class="k">struct</span> <span class="n">attribute_group</span> <span class="o">**</span><span class="n">groups</span><span class="p">;</span>
+
+    <span class="k">const</span> <span class="k">struct</span> <span class="n">dev_pm_ops</span> <span class="o">*</span><span class="n">pm</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">driver_private</span> <span class="o">*</span><span class="n">p</span><span class="p">;</span> <span class="c1">//kobject在這</span>
+<span class="p">};</span>
+
+<span class="k">struct</span> <span class="n">driver_private</span> <span class="p">{</span>
+    <span class="k">struct</span> <span class="n">kobject</span> <span class="n">kobj</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">klist</span> <span class="n">klist_devices</span><span class="p">;</span>  <span class="c1">//該driver能支援的device列表</span>
+    <span class="k">struct</span> <span class="n">klist_node</span> <span class="n">knode_bus</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">module_kobject</span> <span class="o">*</span><span class="n">mkobj</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">device_driver</span> <span class="o">*</span><span class="n">driver</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>基本上這就是LDM三個主角的結構。拿pci driver當例子</p>
+
+<p>drivers/pci/pci-driver.c</p>
+
+<h3 id="bus的部分">bus的部分</h3>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">bus_type</span> <span class="n">pci_bus_type</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">.</span><span class="n">name</span>        <span class="o">=</span> <span class="s">"pci"</span><span class="p">,</span>
+    <span class="p">.</span><span class="n">match</span>        <span class="o">=</span> <span class="n">pci_bus_match</span><span class="p">,</span>
+    <span class="p">.</span><span class="n">uevent</span>        <span class="o">=</span> <span class="n">pci_uevent</span><span class="p">,</span>
+    <span class="p">.</span><span class="n">probe</span>        <span class="o">=</span> <span class="n">pci_device_probe</span><span class="p">,</span>
+    <span class="p">.</span><span class="n">remove</span>        <span class="o">=</span> <span class="n">pci_device_remove</span><span class="p">,</span>
+    <span class="p">.</span><span class="n">shutdown</span>    <span class="o">=</span> <span class="n">pci_device_shutdown</span><span class="p">,</span>
+    <span class="p">.</span><span class="n">dev_attrs</span>    <span class="o">=</span> <span class="n">pci_dev_attrs</span><span class="p">,</span>
+    <span class="p">.</span><span class="n">bus_attrs</span>    <span class="o">=</span> <span class="n">pci_bus_attrs</span><span class="p">,</span>
+    <span class="p">.</span><span class="n">pm</span>        <span class="o">=</span> <span class="n">PCI_PM_OPS_PTR</span><span class="p">,</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>宣告了pci bus及其屬性。</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">static</span> <span class="kt">int</span> <span class="n">__init</span> <span class="nf">pci_driver_init</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">bus_register</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pci_bus_type</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">postcore_initcall</span><span class="p">(</span><span class="n">pci_driver_init</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>__init macro表示在開機時會作初始化，即do_basic_setup時，其level是在postcore，細節可參考include/linux /init.h</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#define pure_initcall(fn)        __define_initcall("0",fn,0)
+#define core_initcall(fn)        __define_initcall("1",fn,1)
+#define core_initcall_sync(fn)        __define_initcall("1s",fn,1s)
+#define postcore_initcall(fn)        __define_initcall("2",fn,2)
+#define postcore_initcall_sync(fn)    __define_initcall("2s",fn,2s)
+#define arch_initcall(fn)        __define_initcall("3",fn,3)
+#define arch_initcall_sync(fn)        __define_initcall("3s",fn,3s)
+#define subsys_initcall(fn)        __define_initcall("4",fn,4)
+#define subsys_initcall_sync(fn)    __define_initcall("4s",fn,4s)
+#define fs_initcall(fn)            __define_initcall("5",fn,5)
+#define fs_initcall_sync(fn)        __define_initcall("5s",fn,5s)
+#define rootfs_initcall(fn)        __define_initcall("rootfs",fn,rootfs)
+#define device_initcall(fn)        __define_initcall("6",fn,6)
+#define device_initcall_sync(fn)    __define_initcall("6s",fn,6s)
+#define late_initcall(fn)        __define_initcall("7",fn,7)
+#define late_initcall_sync(fn)        __define_initcall("7s",fn,7s)
+</span></code></pre></div></div>
+
+<p>再來就是其module_init，可看到最後是執行了bus_register(&amp;pci_bus_type)，節錄如下:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">bus_register</span><span class="p">(</span><span class="k">struct</span> <span class="n">bus_type</span> <span class="o">*</span><span class="n">bus</span><span class="p">)</span>
+<span class="p">{</span>
+
+<span class="cm">/*...............*/</span>
+<span class="n">retval</span> <span class="o">=</span> <span class="n">kobject_set_name</span><span class="p">(</span><span class="o">&amp;</span><span class="n">priv</span><span class="o">-&gt;</span><span class="n">subsys</span><span class="p">.</span><span class="n">kobj</span><span class="p">,</span> <span class="s">"%s"</span><span class="p">,</span> <span class="n">bus</span><span class="o">-&gt;</span><span class="n">name</span><span class="p">);</span>
+
+<span class="cm">/*...............*/</span>
+
+    <span class="n">retval</span> <span class="o">=</span> <span class="n">kset_register</span><span class="p">(</span><span class="o">&amp;</span><span class="n">priv</span><span class="o">-&gt;</span><span class="n">subsys</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">retval</span><span class="p">)</span>
+        <span class="k">goto</span> <span class="n">out</span><span class="p">;</span>
+
+    <span class="n">retval</span> <span class="o">=</span> <span class="n">bus_create_file</span><span class="p">(</span><span class="n">bus</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">bus_attr_uevent</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">retval</span><span class="p">)</span>
+        <span class="k">goto</span> <span class="n">bus_uevent_fail</span><span class="p">;</span>
+
+    <span class="n">priv</span><span class="o">-&gt;</span><span class="n">devices_kset</span> <span class="o">=</span> <span class="n">kset_create_and_add</span><span class="p">(</span><span class="s">"devices"</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span>
+                         <span class="o">&amp;</span><span class="n">priv</span><span class="o">-&gt;</span><span class="n">subsys</span><span class="p">.</span><span class="n">kobj</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">priv</span><span class="o">-&gt;</span><span class="n">devices_kset</span><span class="p">)</span> <span class="p">{</span><span class="n">retval</span> <span class="o">=</span> <span class="n">add_probe_files</span><span class="p">(</span><span class="n">bus</span><span class="p">);</span>
+
+        <span class="n">retval</span> <span class="o">=</span> <span class="o">-</span><span class="n">ENOMEM</span><span class="p">;</span>
+        <span class="k">goto</span> <span class="n">bus_devices_fail</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="n">priv</span><span class="o">-&gt;</span><span class="n">drivers_kset</span> <span class="o">=</span> <span class="n">kset_create_and_add</span><span class="p">(</span><span class="s">"drivers"</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span>
+                         <span class="o">&amp;</span><span class="n">priv</span><span class="o">-&gt;</span><span class="n">subsys</span><span class="p">.</span><span class="n">kobj</span><span class="p">);</span>
+<span class="cm">/*...............*/</span>
+
+    <span class="n">retval</span> <span class="o">=</span> <span class="n">add_probe_files</span><span class="p">(</span><span class="n">bus</span><span class="p">);</span>
+<span class="cm">/*...............*/</span>
+
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>這其中包括建立sysfs下的file，可看出devices及drivers兩個資料夾。而後的add_probe_files則是sysfs下更detail的部份。</p>
+
+<p>這樣的結果就是在/sys/bus/下會多出一個pci的folder。之後就是kernel scan到devices/ drivers時，再加入/sys/bus/pci/devices/及/sys/bus/pci/drivers/。</p>
+
+<h3 id="再來是device-1">再來是device</h3>
+
+<p>drivers/pci/pci.h</p>
+
+<p>這其實是再封裝了include/linux/device.h裡的struct device，加上了自定的其他屬性</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">pci_dev</span> <span class="p">{</span>
+    <span class="k">struct</span> <span class="n">list_head</span> <span class="n">bus_list</span><span class="p">;</span>    <span class="cm">/* node in per-bus list */</span>
+    <span class="k">struct</span> <span class="n">pci_bus</span>    <span class="o">*</span><span class="n">bus</span><span class="p">;</span>        <span class="cm">/* bus this device is on */</span>
+    <span class="k">struct</span> <span class="n">pci_bus</span>    <span class="o">*</span><span class="n">subordinate</span><span class="p">;</span>    <span class="cm">/* bus this device bridges to */</span>
+
+    <span class="kt">void</span>        <span class="o">*</span><span class="n">sysdata</span><span class="p">;</span>    <span class="cm">/* hook for sys-specific extension */</span>
+    <span class="k">struct</span> <span class="n">proc_dir_entry</span> <span class="o">*</span><span class="n">procent</span><span class="p">;</span>    <span class="cm">/* device entry in /proc/bus/pci */</span>
+    <span class="k">struct</span> <span class="n">pci_slot</span>    <span class="o">*</span><span class="n">slot</span><span class="p">;</span>        <span class="cm">/* Physical slot this device is in */</span>
+
+    <span class="kt">unsigned</span> <span class="kt">int</span>    <span class="n">devfn</span><span class="p">;</span>        <span class="cm">/* encoded device &amp; function index */</span> <span class="c1">//該device的id資訊，將來跟driver用來 match</span>
+    <span class="kt">unsigned</span> <span class="kt">short</span>    <span class="n">vendor</span><span class="p">;</span>
+    <span class="kt">unsigned</span> <span class="kt">short</span>    <span class="n">device</span><span class="p">;</span>
+    <span class="kt">unsigned</span> <span class="kt">short</span>    <span class="n">subsystem_vendor</span><span class="p">;</span>
+    <span class="kt">unsigned</span> <span class="kt">short</span>    <span class="n">subsystem_device</span><span class="p">;</span>
+    <span class="kt">unsigned</span> <span class="kt">int</span>    <span class="n">class</span><span class="p">;</span>        <span class="cm">/* 3 bytes: (base,sub,prog-if) */</span>
+    <span class="n">u8</span>        <span class="n">revision</span><span class="p">;</span>    <span class="cm">/* PCI revision, low byte of class word */</span>
+    <span class="n">u8</span>        <span class="n">hdr_type</span><span class="p">;</span>    <span class="cm">/* PCI header type (`multi' flag masked out) */</span>
+    <span class="n">u8</span>        <span class="n">pcie_cap</span><span class="p">;</span>    <span class="cm">/* PCI-E capability offset */</span>
+    <span class="n">u8</span>        <span class="n">pcie_type</span><span class="p">;</span>    <span class="cm">/* PCI-E device/port type */</span>
+    <span class="n">u8</span>        <span class="n">rom_base_reg</span><span class="p">;</span>    <span class="cm">/* which config register controls the ROM */</span>
+    <span class="n">u8</span>        <span class="n">pin</span><span class="p">;</span>          <span class="cm">/* which interrupt pin this device uses */</span>
+
+    <span class="k">struct</span> <span class="n">pci_driver</span> <span class="o">*</span><span class="n">driver</span><span class="p">;</span>    <span class="cm">/* which driver has allocated this device */</span>  <span class="c1">//match到則用device_bind_driver(dev)，即不為NULL</span>
+<span class="cm">/*...............*/</span>
+    <span class="k">struct</span>    <span class="n">device</span>    <span class="n">dev</span><span class="p">;</span>        <span class="cm">/* Generic device interface */</span>
+    <span class="kt">int</span>        <span class="n">cfg_size</span><span class="p">;</span>    <span class="cm">/* Size of configuration space */</span>
+
+    <span class="cm">/*
+     * Instead of touching interrupt line and base address registers
+     * directly, use the values stored here. They might be different!
+     */</span>
+    <span class="kt">unsigned</span> <span class="kt">int</span>    <span class="n">irq</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">resource</span> <span class="n">resource</span><span class="p">[</span><span class="n">DEVICE_COUNT_RESOURCE</span><span class="p">];</span> <span class="cm">/* I/O and memory regions + expansion ROMs */</span>
+    <span class="n">resource_size_t</span>    <span class="n">fw_addr</span><span class="p">[</span><span class="n">DEVICE_COUNT_RESOURCE</span><span class="p">];</span> <span class="cm">/* FW-assigned addr */</span>
+    <span class="c1">//其他自定屬性</span>
+    <span class="cm">/* These fields are used by common fixups */</span>
+    <span class="kt">unsigned</span> <span class="kt">int</span>    <span class="n">transparent</span><span class="o">:</span><span class="mi">1</span><span class="p">;</span>    <span class="cm">/* Transparent PCI bridge */</span>
+    <span class="kt">unsigned</span> <span class="kt">int</span>    <span class="n">multifunction</span><span class="o">:</span><span class="mi">1</span><span class="p">;</span><span class="cm">/* Part of multi-function device */</span>
+    <span class="cm">/* keep track of device state */</span><span class="k">const</span> <span class="k">struct</span> <span class="n">pci_device_id</span> <span class="o">*</span><span class="n">id_table</span><span class="p">;</span>    <span class="cm">/* must be non-NULL for probe to be called */</span>
+
+    <span class="kt">unsigned</span> <span class="kt">int</span>    <span class="n">is_added</span><span class="o">:</span><span class="mi">1</span><span class="p">;</span>
+    <span class="kt">unsigned</span> <span class="kt">int</span>    <span class="n">is_busmaster</span><span class="o">:</span><span class="mi">1</span><span class="p">;</span> <span class="cm">/* device is busmaster */</span>
+    <span class="kt">unsigned</span> <span class="kt">int</span>    <span class="n">no_msi</span><span class="o">:</span><span class="mi">1</span><span class="p">;</span>    <span class="cm">/* device may not use msi */</span>
+    <span class="kt">unsigned</span> <span class="kt">int</span>    <span class="n">block_ucfg_access</span><span class="o">:</span><span class="mi">1</span><span class="p">;</span>    <span class="cm">/* userspace config space access is blocked */</span>
+    <span class="cm">/*...............*/</span>
+
+<span class="p">};</span>
+</code></pre></div></div>
+
+<h3 id="最後是pci_driver">最後是pci_driver</h3>
+
+<p>跟pci_dev一樣，再次封裝struct device_driver</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">pci_driver</span> <span class="p">{</span>
+    <span class="k">struct</span> <span class="n">list_head</span> <span class="n">node</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">;</span>
+    <span class="k">const</span> <span class="k">struct</span> <span class="n">pci_device_id</span> <span class="o">*</span><span class="n">id_table</span><span class="p">;</span>    <span class="cm">/* must be non-NULL for probe to be called */</span> <span class="c1">//內含其支援的device id資訊，將來match時用的</span>
+    <span class="kt">int</span>  <span class="p">(</span><span class="o">*</span><span class="n">probe</span><span class="p">)</span>  <span class="p">(</span><span class="k">struct</span> <span class="n">pci_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span> <span class="k">const</span> <span class="k">struct</span> <span class="n">pci_device_id</span> <span class="o">*</span><span class="n">id</span><span class="p">);</span>    <span class="cm">/* New device inserted */</span>
+    <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">remove</span><span class="p">)</span> <span class="p">(</span><span class="k">struct</span> <span class="n">pci_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>    <span class="cm">/* Device removed (NULL if not a hot-plug capable driver) */</span>
+    <span class="kt">int</span>  <span class="p">(</span><span class="o">*</span><span class="n">suspend</span><span class="p">)</span> <span class="p">(</span><span class="k">struct</span> <span class="n">pci_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span> <span class="n">pm_message_t</span> <span class="n">state</span><span class="p">);</span>    <span class="cm">/* Device suspended */</span>
+    <span class="kt">int</span>  <span class="p">(</span><span class="o">*</span><span class="n">suspend_late</span><span class="p">)</span> <span class="p">(</span><span class="k">struct</span> <span class="n">pci_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span> <span class="n">pm_message_t</span> <span class="n">state</span><span class="p">);</span>
+    <span class="kt">int</span>  <span class="p">(</span><span class="o">*</span><span class="n">resume_early</span><span class="p">)</span> <span class="p">(</span><span class="k">struct</span> <span class="n">pci_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+    <span class="kt">int</span>  <span class="p">(</span><span class="o">*</span><span class="n">resume</span><span class="p">)</span> <span class="p">(</span><span class="k">struct</span> <span class="n">pci_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>                    <span class="cm">/* Device woken up */</span>
+    <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">shutdown</span><span class="p">)</span> <span class="p">(</span><span class="k">struct</span> <span class="n">pci_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+    <span class="k">struct</span> <span class="n">pci_error_handlers</span> <span class="o">*</span><span class="n">err_handler</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">device_driver</span>    <span class="n">driver</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">pci_dynids</span> <span class="n">dynids</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>以上是LDM的結構，再來要看看範例以及device/driver的註冊過程。</p>
+
+<p>Reference</p>
+
+<p>高茂林</p>
+
+  </div>
+
+  <span> tags: [
+    
+      
+      <a href="/tag/kernel"><code class="highligher-rouge"><nobr>kernel</nobr></code>&nbsp;</a>
+    
+      
+      <a href="/tag/driver"><code class="highligher-rouge"><nobr>driver</nobr></code>&nbsp;</a>
+    
+  ]</span>
+  <hr/><br/>
+  <h3>相關文章</h3>
+  
+  <div class="related-posts">
+    
+    
+    
+    
+        
+      
+    
+  </div><a class="u-url" href="/2021/08/10/Linux-Device-Model-%E4%B8%89%E8%A7%92%E9%97%9C%E4%BF%82.html" hidden></a>
+</article>
+
+
+    </main>
+    <footer class="footer">
+      <div class="container">
+        &copy; 2021 Hsueh-Shih's Blog 
+
+      </div>
+    </footer>
+  </body>
+</html>
