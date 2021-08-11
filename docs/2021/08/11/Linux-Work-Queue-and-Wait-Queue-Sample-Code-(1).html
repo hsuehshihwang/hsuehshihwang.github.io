@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Hsueh-Shih's Blog</title>
+<link rel="stylesheet" href="/assets/main.css">
+<link rel="stylesheet" href="/assets/sticky-footer-navbar.css">
+<script src="/js/jquery.slim.min.js"></script>
+<script src="/js/umd/popper.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/brands.min.js"></script>
+<script src="/js/solid.min.js"></script>
+<script src="/js/fontawesome.min.js"></script>
+
+
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Linux Work Queue and Wait Queue Sample Code (1) | Hsueh-Shih’s Blog</title>
+<meta name="generator" content="Jekyll v4.2.0" />
+<meta property="og:title" content="Linux Work Queue and Wait Queue Sample Code (1)" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="#include &lt;linux/module.h&gt; #include &lt;linux/kernel.h&gt; #include &lt;linux/delay.h&gt; #include &lt;linux/workqueue.h&gt; #include &lt;linux/wait.h&gt; #include &lt;linux/sched.h&gt; #include &lt;linux/delay.h&gt; struct workqueue_struct *workqueue_test; struct work_struct work_test; // #define WORK_LOOP #ifdef WORK_LOOP static int stop = 0; #else static DECLARE_WAIT_QUEUE_HEAD(waitqueue_test); static char flag = &#39;n&#39;; #endif void work_test_func(struct work_struct *work) { printk(&quot;%s()\n&quot;, __func__); #ifdef WORK_LOOP mdelay(5000); if(!stop) queue_work(workqueue_test, &amp;work_test); #else printk(&quot;Blocking...\n&quot;); // wait for flag and event wait_event_interruptible(waitqueue_test, flag == &#39;y&#39;); printk(&quot;Leave blocking...\n&quot;); #endif } static int test_init(void) { printk(&quot;Hello,world!\n&quot;); // alloc workqueue workqueue_test = alloc_workqueue(&quot;workqueue_test&quot;, 0, 0); // init work INIT_WORK(&amp;work_test, work_test_func); // append work into workqueue queue_work(workqueue_test, &amp;work_test); return 0; } static void test_exit(void) { printk(&quot;Goodbye,cruel world!\n&quot;); flag = &#39;y&#39;; wake_up_interruptible(&amp;waitqueue_test); #ifdef WORK_LOOP stop = 1; #endif flush_workqueue(workqueue_test); destroy_workqueue(workqueue_test); } module_init(test_init); module_exit(test_exit); MODULE_AUTHOR(&quot;Ralph Wang&lt;enhanceralph@gmail.com&gt;&quot;); MODULE_LICENSE(&quot;Dual BSD/GPL&quot;);" />
+<meta property="og:description" content="#include &lt;linux/module.h&gt; #include &lt;linux/kernel.h&gt; #include &lt;linux/delay.h&gt; #include &lt;linux/workqueue.h&gt; #include &lt;linux/wait.h&gt; #include &lt;linux/sched.h&gt; #include &lt;linux/delay.h&gt; struct workqueue_struct *workqueue_test; struct work_struct work_test; // #define WORK_LOOP #ifdef WORK_LOOP static int stop = 0; #else static DECLARE_WAIT_QUEUE_HEAD(waitqueue_test); static char flag = &#39;n&#39;; #endif void work_test_func(struct work_struct *work) { printk(&quot;%s()\n&quot;, __func__); #ifdef WORK_LOOP mdelay(5000); if(!stop) queue_work(workqueue_test, &amp;work_test); #else printk(&quot;Blocking...\n&quot;); // wait for flag and event wait_event_interruptible(waitqueue_test, flag == &#39;y&#39;); printk(&quot;Leave blocking...\n&quot;); #endif } static int test_init(void) { printk(&quot;Hello,world!\n&quot;); // alloc workqueue workqueue_test = alloc_workqueue(&quot;workqueue_test&quot;, 0, 0); // init work INIT_WORK(&amp;work_test, work_test_func); // append work into workqueue queue_work(workqueue_test, &amp;work_test); return 0; } static void test_exit(void) { printk(&quot;Goodbye,cruel world!\n&quot;); flag = &#39;y&#39;; wake_up_interruptible(&amp;waitqueue_test); #ifdef WORK_LOOP stop = 1; #endif flush_workqueue(workqueue_test); destroy_workqueue(workqueue_test); } module_init(test_init); module_exit(test_exit); MODULE_AUTHOR(&quot;Ralph Wang&lt;enhanceralph@gmail.com&gt;&quot;); MODULE_LICENSE(&quot;Dual BSD/GPL&quot;);" />
+<link rel="canonical" href="https://hsuehshihwang.github.io//2021/08/11/Linux-Work-Queue-and-Wait-Queue-Sample-Code-(1).html" />
+<meta property="og:url" content="https://hsuehshihwang.github.io//2021/08/11/Linux-Work-Queue-and-Wait-Queue-Sample-Code-(1).html" />
+<meta property="og:site_name" content="Hsueh-Shih’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-08-11T19:12:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Linux Work Queue and Wait Queue Sample Code (1)" />
+<script type="application/ld+json">
+{"headline":"Linux Work Queue and Wait Queue Sample Code (1)","dateModified":"2021-08-11T19:12:00+08:00","datePublished":"2021-08-11T19:12:00+08:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://hsuehshihwang.github.io//2021/08/11/Linux-Work-Queue-and-Wait-Queue-Sample-Code-(1).html"},"url":"https://hsuehshihwang.github.io//2021/08/11/Linux-Work-Queue-and-Wait-Queue-Sample-Code-(1).html","description":"#include &lt;linux/module.h&gt; #include &lt;linux/kernel.h&gt; #include &lt;linux/delay.h&gt; #include &lt;linux/workqueue.h&gt; #include &lt;linux/wait.h&gt; #include &lt;linux/sched.h&gt; #include &lt;linux/delay.h&gt; struct workqueue_struct *workqueue_test; struct work_struct work_test; // #define WORK_LOOP #ifdef WORK_LOOP static int stop = 0; #else static DECLARE_WAIT_QUEUE_HEAD(waitqueue_test); static char flag = &#39;n&#39;; #endif void work_test_func(struct work_struct *work) { printk(&quot;%s()\\n&quot;, __func__); #ifdef WORK_LOOP mdelay(5000); if(!stop) queue_work(workqueue_test, &amp;work_test); #else printk(&quot;Blocking...\\n&quot;); // wait for flag and event wait_event_interruptible(waitqueue_test, flag == &#39;y&#39;); printk(&quot;Leave blocking...\\n&quot;); #endif } static int test_init(void) { printk(&quot;Hello,world!\\n&quot;); // alloc workqueue workqueue_test = alloc_workqueue(&quot;workqueue_test&quot;, 0, 0); // init work INIT_WORK(&amp;work_test, work_test_func); // append work into workqueue queue_work(workqueue_test, &amp;work_test); return 0; } static void test_exit(void) { printk(&quot;Goodbye,cruel world!\\n&quot;); flag = &#39;y&#39;; wake_up_interruptible(&amp;waitqueue_test); #ifdef WORK_LOOP stop = 1; #endif flush_workqueue(workqueue_test); destroy_workqueue(workqueue_test); } module_init(test_init); module_exit(test_exit); MODULE_AUTHOR(&quot;Ralph Wang&lt;enhanceralph@gmail.com&gt;&quot;); MODULE_LICENSE(&quot;Dual BSD/GPL&quot;);","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7910474923772750" crossorigin="anonymous"></script>
+
+  </head>
+  <body>
+    <header>
+      <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark">
+  <a class="navbar-brand" href="/">Hsueh-Shih's Blog</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item ">
+        <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="/about">About Me</a>
+      </li>
+      <!--
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Dropdown
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#">Action</a>
+          <a class="dropdown-item" href="#">Another action</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">Something else here</a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link disabled" href="#">Disabled</a>
+      </li>
+      -->
+    </ul>
+    <!-- TODO: search form
+    <form class="form-inline my-2 my-lg-0">
+      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form>
+    -->
+  </div>
+</nav>
+
+    </header>
+    <main role="main" class="container pb-5">
+      <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <span> tags: [
+    
+      
+      <a href="/tag/buildroot"><code class="highligher-rouge"><nobr>buildroot</nobr></code>&nbsp;</a>
+    
+      
+      <a href="/tag/post"><code class="highligher-rouge"><nobr>post</nobr></code>&nbsp;</a>
+    
+  ]</span>
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Linux Work Queue and Wait Queue Sample Code (1)</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2021-08-11T19:12:00+08:00" itemprop="datePublished">
+        Aug 11, 2021
+      </time></p>
+    <p><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-7910474923772750"
+     data-ad-slot="6411930493"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#include &lt;linux/module.h&gt;
+#include &lt;linux/kernel.h&gt;
+#include &lt;linux/delay.h&gt;
+#include &lt;linux/workqueue.h&gt;
+#include &lt;linux/wait.h&gt;
+#include &lt;linux/sched.h&gt;
+#include &lt;linux/delay.h&gt;
+
+struct workqueue_struct *workqueue_test;
+
+struct work_struct work_test;
+
+// #define WORK_LOOP 
+#ifdef WORK_LOOP
+static int stop = 0; 
+#else
+static DECLARE_WAIT_QUEUE_HEAD(waitqueue_test);
+static char flag = 'n';
+#endif
+
+void work_test_func(struct work_struct *work)
+{
+    printk("%s()\n", __func__);
+
+#ifdef WORK_LOOP
+    mdelay(5000);
+
+    if(!stop) queue_work(workqueue_test, &amp;work_test);
+
+#else
+    printk("Blocking...\n");
+
+    // wait for flag and event
+    wait_event_interruptible(waitqueue_test, flag == 'y');
+    
+    printk("Leave blocking...\n");
+
+#endif
+
+}
+
+
+static int test_init(void)
+{
+    printk("Hello,world!\n");
+
+    // alloc workqueue
+    workqueue_test = alloc_workqueue("workqueue_test", 0, 0);
+    
+    // init work
+    INIT_WORK(&amp;work_test, work_test_func);
+    
+    // append work into workqueue
+    queue_work(workqueue_test, &amp;work_test);
+    
+    return 0;
+
+}
+
+static void test_exit(void)
+{
+    printk("Goodbye,cruel world!\n");
+    flag = 'y'; 
+    wake_up_interruptible(&amp;waitqueue_test);
+#ifdef WORK_LOOP
+    stop = 1; 
+#endif
+    flush_workqueue(workqueue_test);
+    destroy_workqueue(workqueue_test);
+}
+
+module_init(test_init);
+module_exit(test_exit);
+
+MODULE_AUTHOR("Ralph Wang&lt;enhanceralph@gmail.com&gt;");
+MODULE_LICENSE("Dual BSD/GPL");
+
+
+</code></pre></div></div>
+
+
+  </div>
+
+  <span> tags: [
+    
+      
+      <a href="/tag/buildroot"><code class="highligher-rouge"><nobr>buildroot</nobr></code>&nbsp;</a>
+    
+      
+      <a href="/tag/post"><code class="highligher-rouge"><nobr>post</nobr></code>&nbsp;</a>
+    
+  ]</span>
+  <hr/><br/>
+  <h3>相關文章</h3>
+  
+  <div class="related-posts">
+    
+    
+    
+    
+        
+      
+    
+    
+      
+      <a href="/2021/08/11/Buildroot-%E7%AD%86%E8%A8%98.html">Buildroot 筆記</a><br>
+      
+        
+      
+    
+  </div><a class="u-url" href="/2021/08/11/Linux-Work-Queue-and-Wait-Queue-Sample-Code-(1).html" hidden></a>
+</article>
+
+
+    </main>
+    <footer class="footer">
+      <div class="container">
+        &copy; 2021 Hsueh-Shih's Blog 
+
+      </div>
+    </footer>
+  </body>
+</html>
